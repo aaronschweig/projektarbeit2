@@ -67,13 +67,40 @@
 	\end{itemize}
 \end{itemize}
 \section{Kriterien für gute Gouvernance}
+
+Um im weiteren Verlauf der Arbeit die bereits bestehende und auch die vorgeschlagene Lösung zur Gouvernance und Observability von Microservice miteinander vergleichen zu können müssen einige Kriterien eingeführt werden. Um diese Kriterien zu erarbeiten wird auf vorherige Definition der Gouvernance und Observability geschaut \marginpar{Ref auf G \& O Def.}. Wie bereits zuvor festgestellt wurde besteht die Observability aus drei Säulen - dem \textit{Logging}, dem \textit{Tracing} und den \textit{Metriken}. Ein System welches zum Ziel hat Microservices zu observieren muss also auch in diesem drei Bereichen etwas beitragen. 
+
+Des weiteren spielen Aspekte aus der Microservice Gouvernance eine Rolle für einene Technologie-Stack, welcher wie der hier vorgestellte versucht eine Brücke zwischen diesen beiden Bereichen zu bilden. Ein besonders großer und schwerwiegender Punkt der Microservice Gouvernance stellt eine dezentralisierte Verwaltung dar. Wie bereits \citeauthor{LeanixGouv} in seinem Artikel sagt:
+\enquote{
+	The main concept of these Microservices are the reusability of assets and tools which can be decentralized. The core theme of a decentralization governance is the concept of building and running it. This decentralized model is best suited for Microservices governances.
+}\autocite{LeanixGouv}
+
+Ein Tool welches in diesem Bereich helfen will, muss also als Entscheidungsstütze für dezentralisierte Serviecs funktionieren, um einen mehrwert zu schaffen. \\
+Des weiteren muss eine Wertschöpfung aus den gewonnen Daten gezogen werden können. Es stellt also einen wichtigen Faktor dar, alle gesammelten Daten so aufzubereiten, dass es für den Nutzer dieses Tools einen Mehrwert bietet, welcher darüber hinausgeht nur einen Einblick in ebendiese Daten zu erhalten. Beispiele dafür wären Anwendungen im Bereich der \textbf{Predicitve Maintance} oder der \textbf{Anomaly Detection}, usw.
+
+Tools, welche diesen Bereich abdecken müssen also in den folgenden drei großen Kriterien einen Mehrwert gegenüber bestehenden Lösungen bieten:
+
+\begin{enumerate}
+	\item Grundelgende Aspekte und Funktionen aus dem Bereich der Microservice Observability müssen abgedeckt sein. Dies beinhaltet die drei Säulen Logging, Tracing und Metriken.
+	\item Die dezentralisierte Natur von Microservices muss gefördert werden, sodass ein Tool Entscheidungen - technischer oder unternehmerischer Natur - unterstützen und postiv beeinflussen kann.
+	\item Gewonne Daten, egal aus welchen Bereich, müssen einen Mehrwert für den Nutzer darstellen, der über das reine Einsehen der gesammelten Daten hinausgeht.
+\end{enumerate}
+
+Auf Basis dieser drei Kriterien sollen nun bestehende Lösungen bewertet werden und mit der eigenen Lösungen verglichen werden, um festzustelle, ob die vorgeschlagene Lösungen
+\begin{enumerate}
+	\item den definiert Kriterien entspricht und
+	\item einen nicht vorhandenen Mehrwert gegenüber bestehenden Lösungen bietet.
+\end{enumerate}
+
+Zuletzt ist es sehr wichtig, sollte ein neues Tool gewählt werden darauf zu achten, dass es offenen Standards folgt, um sicherzustelle, dass ein neues (oder bestehendes) System kompatibel ist und mit fremden Tools interagieren kann. Dies ist wichtig, damit auch Unternehmen sicherstellen können, dass der Aufwand, welcher mit der Einführung eines neuen Tolls kommt, ein lohnenswerter ist und eine langfristige Integration aufgrund von Kompatibilität als sinnvoll erachtet werden kann,
+
 \section{Verschiedene Ansätze zum lösen von Gouvernance und Observability}
 \subsection{Eigene Ansätze}
 \subsection{Ansätze verschiedener Unternehmen}
 \begin{itemize}
-	\item Elastic
-	\item Neo4J
-	\item Netflix
+	\item Elastic \marginpar{Anomaly Detection}
+	\item Neo4J \marginpar{ServiceRegistry (Idee für die Arbeit)}
+	\item Netflix \marginpar{Master of Microservice}
 \end{itemize}
 Microserice Gouvernance und Themen der Observability sind bekannte Probleme und wurden schon oft von verschiedenen Organsiationen gelöst. Bewegt man sich im OpenSource bereich so findet sich mit der \ac{CNCF} ein Zusammenschluss, welcher versucht offene Standards für viele elementare Bereiche der Observability und der Gouvernance zu erreichen.
 
@@ -86,6 +113,12 @@ Die zugrundeliegenden Techniken ermöglichen die Umsetzung von entkoppelten Syst
 
 Die Cloud Native Computing Foundation fördert die Akzeptanz dieser Paradigmen durch die Ausgestaltung eines Open Source Ökosystems aus herstellerneutralen Projekten. Wir demokratisieren modernste und innovative Softwareentwicklungs-Patterns, um diese Innovationen für alle zugänglich zu machen.
 }\autocite{CNCFGithub}
+
+Die \ac{CNCF} vereint also mehrere Tools, welche allen offenen Standards folgen, damit Unternehmen unabhängig von großen Cloudanbietern wie \ac{GCP}, \ac{AWS} oder Microsoft Azure eine Cloud-Infrastruktur aufbauen können. Ein paar Beispiele der \ac{CNCF} zugehörigen Projekte sind treibende, grundlegende Softwarelösungen wie Kubernetes oder OpenShift.
+
+Zusätzlich dient die \ac{CNCF} selbst auch als Organsiation, um verschiedene Industriestandards duchzusetzen. So wurde beispielsweise mithilfe der \textbf{Open Telemetry} ein Standard geschaffen, welcher Toolübergreifen das Sammeln und Auswerten verscheidener Tracingdaten ermöglicht. Dies ermöglicht einem Unternehmen, einen eigenen Stack zusammenzustellen, da es sich darauf verlassen kann, dass die Projekte, welche Teil der \ac{CNCF} sind miteinander kommunizieren und arbeiten können.
+
+\url{https://landscape.cncf.io/category=coordination-service-discovery,service-proxy,service-mesh,observability-and-analysis&format=card-mode}
 
 \section{Auf Basis der kriterien hergeleiteter eigener Ansatz mithilfe eines MicroserviceGraphen}
 
