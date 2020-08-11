@@ -1,0 +1,107 @@
+\chapter{Microservice - Gouvernance - Observability}
+
+Die Microservicearchitektur wurde erstmals 20XX von XXXX \marginpar{TODO: Quelle finden} vorgeschlagenen. Dabei wurden wichtige Elemente aus dem Vorgänger, der \ac{SOA} übernommen. Außerdem stellt diese Architektur einen Nachfolger für den monolithischen Architekturansatz dar. Im folgenden Teil soll anhand eines kurzes Beispiels erläutert werden, welche Aspekte der einzelnen Ansätze in die Microservicearchitektur einspielen.
+
+\section{Die Geschichte der Microservicearchitektur}
+
+Applikationen dienen als Automatisierer und sollen helfen komplexe Prozesse einfacher und am besten ohne menschliches Zutun beenden zu können. Dabei besitz die Applikation Aufgaben, die aus der Gesamtheit des Prozesses erwachsen. Es kann also sein, dass Daten aus vielen verschiedenen Bereichen eines Unternehmens benötigt werden. Anhand eines vereinfachten Prozesses sollen nun die verscheidenen Architekturen abgeleitet werden. Im Beispiel wird ein Online-Shop dargestellt.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\linewidth]{img/prozess_eCommernce.png}
+	\caption[Prozess Online-Shop]{Vereinfachter Prozess eines Online-Shops mit vier Komponenten\\ Quelle: Eigen}
+	\label{fig:prozess_online_shop}
+\end{figure}
+
+In Abbildung \vref{fig:prozess_online_shop} ist der Prozess beschrieben. Es wird dabei nur ein einfacher Bestellprozess betrachtet. Ein Kunde bestellt auf einer Website bestimmte Produkte. Im Order-Management werden dann die Informationen zu entsprechenden Produkte, die zu dieser Bestellung gehören aus dem Produkt-Management angefordert. Mithilfe der Produktinformationen kann dann im Bezahlbereich ein Endpreis für den Nutzer kalkuliert werden. Die dort generierten Informationen können dann wieder der Website zur Verfügung gestellt werden, damit der Nutzer einen Bezahlvorgang einleiten kann.
+
+\subsection{Monolithen}
+Wird nun ein Entwicklerteam damit beauftragt ein System auf Basis dieses Prozesses zu implementieren so kann ein \textbf{monolithischer Ansatz} gewählt werden. Eine ebenfalls vereinfachte Architektur könnte für den oben beschreibenen Prozess folgendermaßen aussehen:
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\linewidth]{img/monolitische_architektur.png}
+	\caption[monolitische Architektur]{Abbildung des Prozesses mithilfe eines monolithischen Ansatzes\\Quelle: Eigen}
+	\label{fig:monolithic_arch}
+\end{figure}
+
+Die in \vref{fig:monolithic_arch} beschriebene Architektur hat einige Eigenschaften, welche sie zu einer monolithischen Architektur werde lassen. Dazu gehört unter anderem die Tatsache, dass der Prozess in verscheidene Komponenten oder Module unterteilt wird, welche alle zusammen die Applikation bilden. Zusätzlich greifen alle Komponenten, da sie als eine Einheit deployt werden auf dieselbe Datenbank zu. Sowohl die Tatsache, dass es nicht in einzelne Services sonder Komponenten unterteilt wurde und das sich eine gemeinsame Datenbank geteilt wird stellen Merkmale dar, welche auf eine monolithische Architektur schließen lassen. Ein Vorteil dieses Ansatzes ist, dass die Kommunikation zwischen den verscheidenen Komponenten sehr einfach ist, da diese meistens auch logisch als \textit{ein Programm} ablaufen. So kann das Order-Management Daten anfordern indem es eine Methode im Produkt-Management aufruft. Ein \textbf{Nachteil} dieses Ansatzes besteht aber darin, dass eine sehr starke Kohäsion und Abhängigkeit von der spezifischen Implementierung einer Komponente besteht. So kann beispielsweise das Order-Management nur ausgestausch werden, wenn unter viel Aufwand auch alle anderen Komponenten in dem Monolithen angepasst werden. 
+
+\begin{definition}[Monolith]
+	Monolithen lassen sich anhand folgender Eigenschaften definieren: \autocite[S. 3]{microservice_enterprise}
+	\begin{enumerate}
+		\item Monolithen werden als einzelne Einheit entworfen, entickelt und deployt. Dies bringt mit sich, dass sie oftmals eine enorme Komplexität erreichen, welche nicht gut zu überblicken ist.
+		\item Die einzelnen implementierten Businessfunktionen können nicht einzeln skaliert oder aktualisiert werden. Alle Komponenten sind also an zentrale Deployments des gesamten Monolithen gebunden, auch wenn nur eine Komponente aktualisiert werden muss.
+		\item Die initiale Wahl einer Programmiersprache kann später nichtmehr oder nur sehr schwer wieder geändert werden, da jede einzelne Folgeentscheidung auch auf Basis dieser Wahl getroffen wurde.
+		\item Bei Instabilität einer einzelnen Komponenten besteht Gefahr, dass die gesamte Applikation einen Fehler erleidet und nichtmehr funktionsfähig ist.
+	\end{enumerate}
+\end{definition}
+
+\subsection{SOA und ESB}\marginpar{Abkürzung in Titel?}
+
+Eine Lösung für die Nachteile, die ein Monolith mit sich bringt sollte mithilfe der \ac{SOA} erreicht werden. Die \ac{SOA} versucht die große, schwer skalierbare und stark zusammenhängende Einheit eines Monolithen aufzubrechen in kleine \enquote{self-contained} Services. Diese Services haben einen klar definierten Aufgabenbereich und besitzen ein wohldefiniertes Interface, welches \textbf{unabhängig} von der unterliegenden Implementierung ist. Dies löst bereits mehrere Probleme, welche in einem Monolithen vorhanden waren. So kann nun durch die lose Kopplung zwischen den Services (Komponenten in dem Monolithen) eine individuellere Skalierbarkeit erreicht werden. Jetzt stehen aber nicht mehr nur ein zentraler Endpunkt wie bei dem Monolithen zur Verfügung der von einem Client angesprochen werden kann. Es kommt auch die Frage auf, wie bestimmt werden kann, welcher Instanz eines Service angesprochen wird, wenn dieser in mehreren Replikaten vorliegt. Um unter anderem diese zwei wichtigen Punkte zu lösen wird die \ac{SOA} meistens nur in Verbindung mit einem \ac{ESB} verwendet.
+
+Unter einem \ac{ESB} kann man sich vereinfacht eine Art intelligenten Load-Balancer vorstellen. Zu den klassischen Aufgaben eines \ac{ESB} gehören unter anderem die Weiterleitung der Anfragen eines Clients zu den richtigen Services. Der Grund warum es sich bei dem \ac{ESB} um einen Art intelligenten Load-Balancer handelt ist, weil er zusätzlich die Fähigkeit besitzt einzelne Services zu zusammengesetzten logischen Einheiten zu kombinieren. Wie diese Services kombiniert werden obliegt dabei dem Implementierenden, welcher es auf Basis des zu implementirenden Prozesses entscheiden kann. Zusätzlich können in einem \ac{ESB} noch Funktionen wie beispielsweise Authenthifizierung von Clients oder auch Monitoringfunktionen eingebaut werden.\\
+Das oben eingeführte Beispiel könnte umgesetzt in einer \ac{SOA} folgendermaßen umgesetzt werden:
+\begin{figure}[]
+	\centering
+	\caption{TODO: Hier kommt noch das Bild der SOA Arch hin}
+\end{figure}
+
+Diese nächste \enquote{Entwicklungsstufe} auf dem Weg zur Microservicearchitektur lässt sich also mithilfe folgender Eigenschaften definieren:
+
+\begin{definition}[SOA und ESB]
+	Im Rahmen der \ac{SOA} ist ein Service mit folgenden Eigenschaften definiert: \autocite[S. 4]{microservice_enterprise}
+	\begin{enumerate}
+		\item Ein Service ist eine eigenständige Implementierung einer wohldefinierten Businessfunktion, welcher über das Netzwerk erreichbar ist. Sie sind lose gekoppelt und verfügen über ein wohldefiniertes Interface über welches sie nach außen hin ansprechbar sind, somit sind sie implementierungsunabhängig. Services stellen die Grundbausteine innerhalb der \ac{SOA} dar.
+		\item Zusammengesetzte Services können mithilfe auf Basis bestehender Services generiert werden und erben alle Eigenschaften, die ein Service auch hat.
+		\item Services können dynamisch registriert werden. Es ist oftmals für den Client nicht von relevanz den genauen Ort eines Services zu kennen, da diese im Rahmen einer Service-Registry in Form von Metadaten vorliegen.
+	\end{enumerate}
+	Dem \ac{ESB} fällt dabei die Rollen eines intelligenten Mittelsmann (\enquote{smart Pipeline}) zu. Er besitzt die Möglichkeit Services zusammenzufassen und sich um die Sichtbarkeit, sowie die zusätzliche Bereitstellung von Funktionen zu kümmern. Er stellt einen zentrale Schnittstelle zwischen den einzelnen Services und der \enquote{Außenwelt} innerhalb der \ac{SOA} dar.
+\end{definition}
+
+\subsection{Der letzte Schritt zur Microservicearchitektur}
+
+\section{Governance und Observability}
+
+\subsection{Gouvernance}
+\subsection{Observability}
+
+\subsection{Betrachtung bestimmter Gesichtspunkte im Rahmen der Gouvernance und Observability}
+
+Viele Konzepte, welche für Microservices essenziell sind stellen mit einem strengen Blick auf die Gouvernance und die Observability eine Herausforderung dar. So werden im folgenden Teil einige dieser Konzepte vorgestellt und die damit verbundenen Probleme erläutert. Diese Probleme müssen mithilfe von Tooling oder eventuell sogar Designentscheidungen während der Softwareentwicklung verhindert werden.
+
+\subsection*{Design for Failure \autocite{FowlerMicrservices}}
+Bei Design for Failure handelt es sich um ein Kernprinzip, welches bereits von \citeauthor{FowlerMicrservices} in seiner Zusammenstellung zu dem Arhcitekturprinzip Microservice in \enquote{\citetitle{FowlerMicrservices}} vorgestellt wurde. Die Idee hinter diesem Prinzip ist, dass Fehler immer, erst Recht im Softwareumfeld unvermeidbar sind. Deshalb müssen 
+
+
+Design for Failure, aber wie bekomme ich es mit? Wie reagiere ich im Fehlerfall? Was muss getan werden, und wie groß sind die Auswirkungen wenn einer meiner tausend Microservices ausfällt? Diese und viele weitere Fragen müssen sich DevOps und Software-Engerneering Teams oftmals stellen, wenn sie sich in einer dezentralisierten Microservicearchitektur befinden. Es ist oftmals ein tiefes Verständnis des Zusammenspiels der einzelnen Services nötig um heruaszufinden, ob ein Fehler von eigenen Service kommt, oder ob es aufgrund eines Fehlers in einem anderen Service kommt. Das ultimative Ziel ist es dabei herauszufinden was das Problem ist und dieses auch schnellstmöglich zu beheben, sodass für den Endnutzer keine Merkbaren folgen auftreten. Microservices folgen dm Prinzip "Design for Failure", sodass eine Recovery möglich ist und ein operatives Business aufrecht erhalten werden kann. Trotz dieser hervorragenden Prämisse reicht ein \enquote{Design for Failure} alleine nicht aus. \enquote{Ein System ist nur so schlau wie das schwächste seiner Bestandteile}. Microservices mit dem Ziel kleiner dezentralisierter Services, welche einen spezialisiert sind auf eine bestimmte aufgabe innerhalb eines BusinessProzesses haben ironischerweise eine ihrer größten Schwäche in der Kommunikation miteinander. Es müssen Standards etabliert werden, sodass ServiceOwner einen wartbaren und funktionsfähigen Service entwickeln können. Es muss einen Software-Engeneer an einer Stelle ein Fehler unterlaufen und aufgrund der starken Kohäsion und Abhängigkeit der einzelnen Services unterneinander kann eine Reihe wichtiger Businessfunktionen davon betroffen sein. Im Beipsiel von Amazon führte ein Fehler in einem Service zu einer 20 Minütigen Downtime der Verkaufswebsite, was einem monetären Verlust von ca. 3.5 Mio Euro gleichkommt.
+
+Kein Problem - \enquote{Design for Failure}. Ein Service fällt aus und ist darauf ausgelegt sich selbst wieder zu reaktivieren. Alle anderen Services können einen ausfall händeln. Soweit die Theorie. In der Praxis ist das leider nur allzuoft nicht der Fall. Innerhalb der Microservice-Gouvernance steht der Aspekt der dezentralisierten Entscheidungsfindung im Vordergrund. Das bedeutet, dass jedes Team das fachliche und unternehmerische Know-How zugesprochen wird das beste Tool und die beste Technologie für die von ihnen zu lösende Aufgabe zu wählen. Fängt ein Architekt nun an diese Aufgabe zu lösen, so benötigt er oftmals Informationen aus anderen Microservices, um seine Aufgabe zu erfüllen. 
+
+
+\begin{center}
+	\includegraphics[width=0.55\linewidth]{img/service_dependency.png}
+\end{center}
+
+Es entsteht also eine Abhängigkeit zwischen zwei Microservices. Ebendieser angefragte Microservice benötigt aber wiederum einen anderen Service, um die angeforderte Information generieren zu können. Es entsteht also schon eine Kette von Abhängigkeiten. Was passiert, wenn ein Glied dieser Kette einen Fehler wirft? 
+
+\Large Hier kommt ein Bild von einem Fehler in einer Microsericekette
+
+\normalsize
+
+Kein Problem - \enquote{Design for Failure}. Ein Architekt muss in der Planung seines Services die Möglichkeit haben, das Risiko und die Auswirkungen einen Ausfalls sowohl seines eigenen Services, als auch seiner Abhängigkeiten einschätzen zu können. Diese Einschätzung sollte auf Daten basieren, welche sowohl Information bisheriger Ausfälle und deren Ursachen enthalten als auch Ausblicke geben können auf den aktuellen Stand und eventuelle zukünftige Ausfälle.
+
+Wie bereits Eingangs erwähnt ist bei der Betrachtung dieses Prinzips die Brille der Gouvernance und Observability aufgesetzt. Es ist ein wichtiger Bestandteil die Services innerhalb einer Unternehmensarchitektur so aufzubauen, dass diese trotz eins Fehlers ordnungsgemäß weiterlaufen und die Fähigkeit zur Recovery besitzen. Dieses Prinzip ist sogar dafür Veranwtortlich, dass Microservicepioniere wie Netflix innerhalb der Observability eine eigene, vierte Säule zu etablieren. Dabei handelt es sich um das sogenannte Chaos-Testing. Um dies kurz zu erläutern: Dabei handelt es sich um einen eigenen \enquote{Service}, welcher auf Basis von Chaos-Experimenten produktive Services ausschaltet und so die Recovery ebendieses Services und auch der davon abhängigen Services überprüfen kann. Dies bringt viele Vorteile mit sich und sorgt auch dafür, dass Services gut entwickelt sind. Diese Idee, wie das bewusste Einführen von Fehlern die generelle Qualität von Services verbessern kann, wird näher in \citetitle{AntifragileOrganization}\autocite{AntifragileOrganization} beschrieben.
+
+\begin{itemize}
+	\item Abgrenzung von Microservices gegenüber API's \\
+	Wenn von Microservice Gouvernance und Observability geredet wird, ist oftmals die unterleigende Architektur mit Fokus auf VM-Daten usw gemeint. Wird von APIS gesprchen hat es oftmals mit business logik undso zutun
+\end{itemize}
+\begin{itemize}
+	\item Welcher bereich soll observiert werden?
+	\begin{itemize}
+		\item Soll es um die hardware Daten (Memory, CPU, klassische cloud metriken) gehen oder um
+		\item Softwareinformationen bzgl. software logging und tracing
+	\end{itemize}
+\end{itemize}
