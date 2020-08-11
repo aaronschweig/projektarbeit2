@@ -101,19 +101,39 @@ Fragen:
 \end{itemize}
 
 \chapter{Einleitung}
-\chapter{Microservice und SOA}
-\section{Entwicklung in den letzten Jahren}
+\chapter{Microservice - Gouvernance - Observability}
 
-Um den Aufbau sowie die Anforderungen an Microservices zu verstehen, muss geklärt werden, wie und warum diese überhautp relevant wurde. Zuvor wurden Applikationen immer nur als sogenannte \textbf{Monolithen} entwickelt. Applikationen haben die Aufgabe komplexe Business-Prozesse abzubilden und müssen oftmals Aufgaben aus verschiedenen Bereichen eines Prozesses abbilden. Um ebendiesen Verlauf besser zu verstehen werden die verschiedenen \enquote{Entwicklungsstufen} von einem Aufbau als Monolith bis hin zu einer Microservicearchitektur anhand eines kleines Beispiels beleuchtet.
+Die Microservicearchitektur wurde erstmals 20XX von XXXX \marginpar{TODO: Quelle finden} vorgeschlagenen. Dabei wurden wichtige Elemente aus dem Vorgänger, der \ac{SOA} übernommen. Außerdem stellt diese Architektur einen Nachfolger für den monolithischen Architekturansatz dar. Im folgenden Teil soll anhand eines kurzes Beispiels erläutert werden, welche Aspekte der einzelnen Ansätze in die Microservicearchitektur einspielen.
 
-Dazu wird ein deutlich vereinfachter E-Commerce Prozess betrachtet. Es werden auf details verzichtet, da es im Rahmen des Beispiels nicht um die Prozessdefintion geht, sondern um die Ableitung einer Architektur. In einem einfachen Szenario sieht der Prozess folgendermaßen aus:
+\section{Die Geschichte der Microservicearchitektur}
+
+Applikationen dienen als Automatisierer und sollen helfen komplexe Prozesse einfacher und am besten ohne menschliches Zutun beenden zu können. Dabei besitz die Applikation Aufgaben, die aus der Gesamtheit des Prozesses erwachsen. Es kann also sein, dass Daten aus vielen verschiedenen Bereichen eines Unternehmens benötigt werden. Anhand eines vereinfachten Prozesses sollen nun die verscheidenen Architekturen abgeleitet werden. Im Beispiel wird ein Online-Shop dargestellt.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\linewidth]{img/prozess_eCommernce.png}
 	\caption[Prozess Online-Shop]{Vereinfachter Prozess eines Online-Shops mit vier Komponenten\\ Quelle: Eigen}
-	% \label{}
+	\label{fig:prozess_online_shop}
 \end{figure}
+
+In Abbildung \vref{fig:prozess_online_shop} ist der Prozess beschrieben. Es wird dabei nur ein einfacher Bestellprozess betrachtet. Ein Kunde bestellt auf einer Website bestimmte Produkte. Im Order-Management werden dann die Informationen zu entsprechenden Produkte, die zu dieser Bestellung gehören aus dem Produkt-Management angefordert. Mithilfe der Produktinformationen kann dann im Bezahlbereich ein Endpreis für den Nutzer kalkuliert werden. Die dort generierten Informationen können dann wieder der Website zur Verfügung gestellt werden, damit der Nutzer einen Bezahlvorgang einleiten kann.
+
+\subsection{Monolithen}
+Wird nun ein Entwicklerteam damit beauftragt ein System auf Basis dieses Prozesses zu implementieren so kann ein \textbf{monolithischer Ansatz} gewählt werden. Eine ebenfalls vereinfachte Architektur könnte für den oben beschreibenen Prozess folgendermaßen aussehen:
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\linewidth]{img/monolitische_architektur.png}
+	\caption[monolitische Architektur]{Abbildung des Prozesses mithilfe eines monolithischen Ansatzes}
+	\label{fig:monolithic_arch}
+\end{figure}
+
+Die in \vref{fig:monolithic_arch} beschriebene Architektur hat einige Eigenschaften, welche sie zu einer monolithischen Architektur werde lassen. Dazu gehört unter anderem die Tatsache, dass der Prozess in verscheidene Komponenten oder Module unterteilt wird, welche alle zusammen die Applikation bilden. Zusätzlich greifen alle Komponenten, da sie als eine Einheit deployt werden auf dieselbe Datenbank zu. Sowohl die Tatsache, dass es nicht in einzelne Services sonder Komponenten unterteilt wurde und das sich eine gemeinsame Datenbank geteilt wird stellen Merkmale dar, welche auf eine monolithische Architektur schließen lassen. Ein Vorteil dieses Ansatzes ist, dass die Kommunikation zwischen den verscheidenen Komponenten sehr einfach ist, da diese meistens auch logisch als \textit{ein Programm} ablaufen. So kann das Order-Management Daten anfordern indem es eine Methode im Produkt-Management aufruft. Ein \textbf{Nachteil} dieses Ansatzes besteht aber darin, das eine sehr starke Kohäsion und Abhängigkeit von der spezifischen Implementierung einer Komponente besteht. So kann beispielsweise das Order-Management nur ausgestausch werden, wenn unter viel Aufwand auch alle anderen Komponenten in dem Monolithen angepasst werden. 
+\marginpar{evetl. noch mehr Nachteile aus dem Buch S.3}
+
+\subsection{SOA und ESB}
+
+Eine Lösung für die Nachteile, die ein Monolith mit sich bringt sollte mithilfe der \ac{SOA} erreicht werden. Die \ac{SOA} versucht die große, schwer skalierbare und stark zusammenhängende Einheit eines Monolithen aufzubrechen in kleine \enquote{self-contained} Services. Diese Services haben einen klar definierten Aufgabenbereich und besitzen ein wohldefiniertes Interface, welches \textbf{unabhängig} von der unterliegenden Implementierung ist. Dies löst bereits mehrere Probleme, welche in einem Monolithen vorhanden waren.
 
 \input{chapters/microservice/probleme_herausforderungen.tex}
 
