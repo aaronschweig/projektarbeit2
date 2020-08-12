@@ -60,10 +60,38 @@ Diese nächste \enquote{Entwicklungsstufe} auf dem Weg zur Microservicearchitekt
 	Dem \ac{ESB} fällt dabei die Rollen eines intelligenten Mittelsmann (\enquote{smart Pipeline}) zu. Er besitzt die Möglichkeit Services zusammenzufassen und sich um die Sichtbarkeit, sowie die zusätzliche Bereitstellung von Funktionen zu kümmern. Er stellt einen zentrale Schnittstelle zwischen den einzelnen Services und der \enquote{Außenwelt} innerhalb der \ac{SOA} dar.
 \end{definition}
 
-\subsection{Der letzte Schritt zur Microservicearchitektur}
+\subsection{Der letzte Schritt - die Microservicearchitektur}
+
+\section{Observability}
+
+Der Begriff und der Nutzen von Observability für Services lässt sich anhand des folgendes Zitates sehr gut nachvollziehen.
+
+\begin{quote}
+	\enquote{Collecting data is cheap, but not having it when you need it can be expensive.}\autocite[S. 373]{microservice_enterprise}
+\end{quote}
+
+Innerhalb einer jeden Technologie wird uns durch Standards \marginpar{CNCF} eröglicht wichtige Einsichten in Services zu erhalten. Wird jedoch darauf verzichtet Daten aus einem Service zu sammeln, so kann es im Fehlerfall die Konsquenz haben, dass Fehler erst garnicht entdeckt oder bemerkt, geschweige denn gelöst werden.
 
 \section{Gouvernance}
-\section{Observability}
+
+Eine Einführung von Microservices in ein Unternehmen kann sehr viele Vorteile besitzen. Sollte sich ein Unternehmen dazu entschließen, von der bisherigen Architektur auf eine Microservicearchitektur umzustellen, bringt dies auch einige Herausforderungen mit sich. Sind in einem Unternehmen bisher nur Monolithen bekannt, so kann die durch Microservices hinzukommende Komplexität schnell zu einem Problem werden. Zumal es sich hierbei um eine immense Anzahl neuer Services, am Beispiel von Netflix sogar mehr als 700 handeln kann. Es stellt sich nun also auch aus der Sicht eines Unternehmens die Frage, wer ist zuständig für einen bestimmten Service? Wie hängen die Services zusammen? Welche Services sind überhaupt vorhanden? Wie können Fehler in einzelnen Services erkannt werden und deren Auswirkungen bestimmt werden?
+
+All diese Frage gehören zu dem Bereich der Microservice-Gouvernance und sollten sich im Vorfeld eines Umstiegs auf eine Microservicearchitektur klären lassen. In \citetitle{microservice_enterprise} wird unter der Gouvernance folgendes verstanden:
+
+\begin{definition}[Dezentralisierte Gouvernance]
+	Die dezentralisierte Gouvernance setzt sich unter anderem aus vier Kernmodulen \autocite[S. 154]{microservice_enterprise} zusammen. Dabei handelt es sich um:
+	\begin{enumerate}
+		\item die Observability
+		\item eine Service-Registry und Service-Discovery
+		\item das API-Management und
+		\item die Entwicklungszyklen
+	\end{enumerate}
+	Diese vier Kernmodule sind innerhalb eines Microservice Ansatzes nicht dezentral verwaltbar. Weitere Bestandteile eines Microservice, welche im Bereich der Gouvernance liegen sind design, development und deployment eines Services. Hierfür sollt es keine zentrale Verwaltung geben,\autocites[S. 154]{microservice_enterprise} [Decentralized Gouvernance]{FowlerMicrservices}sonder die Veranwtortlichkeit sollte im entwickelnden Team liegen.
+\end{definition}
+
+Eine dezentralisierte Gouvernance wie sie bei Microservices genutzt wird hat einie Vorteile gegenüber dem früheren komplett zentrierten Gouvernance-Ansatz. So kann zum Beispiel für jeden Anwendungsfall die Tools von dem zuständig Team selbst gewähl werde und es wird nicht von einer unternehmensweiten Grundsatzentscheidung bestimmt, dass nur ein bestimmer Technologieverbund genutzt werden kann. Trotz dieser Freiheit bleiben wichtige Elemente wie die Observability eines Services in einem zentralisierten skalibaren Service verfügbar, sodass wichtige Daten immer von allen Services zur Verfügung stehen. Hier ist eine zentrale Vorschrift sogar förderlich, da so sichergestellt wird, dass keine \enquote{Insights} verloren gehen, da ein Subset der im Unternehmen vorhanden Service andere Tools für das Monitoring benutzen als der Rest.
+
+Im Rahmen dieser Arbeit wird in Kaptiel \vref{chap:KonzepTool} ein Tool vorgestellt, welches ein Problem im Bereich der Gouvernance in Verbindung mit Elementen aus der Observability lösen soll. Dabei ist eine weitere zentralisiert verwaltete Komponente der Gouvernance relevant. Dabei handlet es sich eine Art Service-Registry mit erweiterter Observability Funktionalität.
 
 \section{Betrachtung bestimmter Gesichtspunkte im Rahmen der Gouvernance und Observability}
 
