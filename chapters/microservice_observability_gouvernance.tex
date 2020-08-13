@@ -62,9 +62,12 @@ Diese nächste \enquote{Entwicklungsstufe} auf dem Weg zur Microservicearchitekt
 
 \subsection{Der letzte Schritt - die Microservicearchitektur}
 
+%%%%%%%%%%%%%%%%%%%%%%%
+%	OBSERVABILITY	  %
+%%%%%%%%%%%%%%%%%%%%%%%
 \section{Observability}
 
-Der Begriff und der Nutzen von Observability für Services lässt sich anhand des folgendes Zitates sehr gut nachvollziehen.
+Der Begriff und der Nutzen von Observability für Services lässt sich anhand der folgenden Zitate sehr gut nachvollziehen.
 
 \begin{quote}
 	\enquote{Collecting data is cheap, but not having it when you need it can be expensive.}\autocite[S. 373]{microservice_enterprise} - \textit{\citeauthor{microservice_enterprise}}
@@ -82,13 +85,15 @@ In \citetitle{Sridharan2018} wird beschrieben, wie sich Services in verteilten S
 
 	\begin{enumerate}
 		\item \textbf{Logging:}\\
-		Das Zeil des Loggings besteht darin, Ereignisse zu dokumentieren. Es ist dabei nicht von Bedeutung, um welche Events es sich handelt. Zusätzlich zu den eigentlichen Daten des Ereigisses, welche unterschiedlichster Art sein können, ist es möglich Metadaten zu loggen, welche dem Ereigis zusätzlichen Kontext verleihen oder einen sonstigen Mehrwert bieten. Dazu können z.B. Information zum Zeitpunkt des Ereigisses (\textit{timestamp}), Ergebnis des Ereigisses (\textit{status}), usw. sein. \\ Ein Vorteil des Loggings bestehen unter anderem darin, dass diese extrem einfach zu generieren sind. Ein Nachteil des Loggings besteht darin, das Logs an sich keine zusätzliche Aussagekraft haben, außer ihrem direkten Inhalt. Es ist schwer rein anhand von Logs ein kommplexes Fehlerbild in einem verteilten System zu finden und korrekte Maßnahmen zur Behebung zu treffen.
+		Das Zeil des Loggings besteht darin, Ereignisse zu dokumentieren. Es ist dabei nicht von Bedeutung, um welche Events es sich handelt. Zusätzlich zu den eigentlichen Daten des Ereigisses, welche unterschiedlichster Art sein können, ist es möglich Metadaten zu loggen, welche dem Ereigis zusätzlichen Kontext verleihen oder einen sonstigen Mehrwert bieten. Dazu gehören z.B. Information zum Zeitpunkt des Ereigisses (\textit{timestamp}), Ergebnis des Ereigisses (\textit{status}), usw. 
+		
+		Ein Vorteil des Loggings bestehen unter anderem darin, dass diese extrem einfach zu generieren sind. Ein Nachteil des Loggings besteht darin, das Logs an sich keine zusätzliche Aussagekraft haben, außer ihrem direkten Inhalt. Es ist schwer rein anhand von Logs ein komplexes Fehlerbild in einem verteilten System zu finden und korrekte Maßnahmen zur Behebung zu treffen.
 		\item \textbf{Metriken:}\\
-		Metriken stellen eine numerische representation von Daten dar, welche über bestimmte Zeitintervalle gemessen wurden. Metriken können also als Indikator verwendet werden, wie gut oder schlecht ein Services performt. Populäre Metriken wären z.B. die Anzahl der Anfragen, die ein Service in einer Minute verarbeitet, oder die durschnittliche Antwortzeit eines Service (seine Latenz). Das zweite Beispiel zeigt sogar ein zusammenspiel zwischen zwei Säulen auf. Diese Metrik kann als abgeleitete Eigenschaft aus Daten des Loggings gesehen werden, da die Latenz als Differenz zwischen dem Zeitpunkt der Anfrage und dem Zeitpunkt der Antwort angesehen werden kann.
+		Metriken stellen eine numerische representation von Daten dar, welche über bestimmte Zeitintervalle gemessen wurden. Metriken können also als Indikator verwendet werden, wie gut oder schlecht ein Services performt. Populäre Metriken wären z.B. die Anzahl der Anfragen, die ein Service in einer Minute verarbeitet, oder die durschnittliche Antwortzeit eines Service (seine Latenz). Das zweite Beispiel zeigt sogar ein Zusammenspiel zwischen zwei Säulen auf. Diese Metrik kann als abgeleitete Eigenschaft aus Daten des Loggings interpretiert werden, da die Latenz als Differenz zwischen dem Zeitpunkt der Anfrage und dem Zeitpunkt der Antwort ist.
 		\setcounter{pillarsCounter}{\value{enumi}}
 	\end{enumerate}
 
-	\textbf{Logging} kann also als datenaggregierende Säule angesehen werden. \textbf{Metriken} hingegen nutzen (unter anderem) die aggregierten Daten, um neue wertvollere Informationen abzuleiten. Die Kombination zwischen diesen beiden Säulen bietet einem Aussenstehenden einen guten Einblick in den internen Zusatand \textit{eines} Services. Wie bereits bei der Defintion eines Microservices erwähnt ist es nicht unüblich hunderte kleine Services beobachten zu müssen. Es wäre allerdings sehr unpraktisch nur die einzelnen Services in Isolation zu betrachten, da es sich um stark vernetzte und voneinander abhängige Services handelt. Deshalb existieren die dritte Säule, um auch serviceübergreifen Daten zu aggregieren und diese zu verwertbaren Informationen umzuwandeln.
+	\textbf{Logging} kann also als datenaggregierende Säule angesehen werden. \textbf{Metriken} hingegen nutzen (unter anderem) die aggregierten Daten, um neue wertvollere Informationen abzuleiten. Die Kombination zwischen diesen beiden Säulen bietet einem Aussenstehenden einen guten Einblick in den internen Zusatand \textit{eines} Services. Wie bereits bei der Defintion eines Microservices erwähnt ist es aber nicht unüblich hunderte kleine Services beobachten zu müssen. Es wäre allerdings sehr unpraktisch nur die einzelnen Services in Isolation zu betrachten, da es sich um stark vernetzte und voneinander abhängige Services handelt. Deshalb existieren noch eine dritte Säule, um auch serviceübergreifend Daten zu aggregieren und diese zu verwertbaren Informationen umzuwandeln.
 
 	\begin{enumerate}
 		\setcounter{enumi}{\value{pillarsCounter}}
@@ -96,10 +101,9 @@ In \citetitle{Sridharan2018} wird beschrieben, wie sich Services in verteilten S
 		Betrachtet man die bisherigen Säulen, so lässt sich ein Trend auf der Betrachtungsebene feststellen. Das Logging fokussiert sich auf die Sammlung der Daten einzelner Ereignisse, der kleinsten Einheit. Die Metriken arbeiten nun ereignisübergreifend und wandeln die Daten zu nutzbaren Informationen um, damit Einsichten in das Verhalten eines Services vorhanden ist - die mittlere Einheit. Der nächste logische Schritt wäre nun, da Services in einem verteilten System miteinander vernetzt sind, eine Anfrage von Beginn bis zur endgültigen Antwort serviceübergreifend zu observieren, quasi eine End-to-End Betrachung. Genau diese Betrachtung wird mithilfe von Tracing ermöglicht. Eine \textit{Trace} (\enquote{Spur}) ist eine Liste zusammenhängender, verteilter Eregnisse, welche als Repräsentant einer End-to-End Anfrage angesehen werden können.
 	\end{enumerate}
 
-	Mithilfe dieser drei Säulen ist es nun einem Aussenstehenden möglich auf \enquote{die inneren Zustände eines Systems auf Basis seiner Ausgaben} zu schließen. Dazu ein kurzes Beispiel:\\
-	Es wird ein Fehler bei einer Anfrage regisitriert. Der dafür zuständige Mitarbeiter kann nun mithilfe des \textbf{Tracings} feststellen um welches Request es sich handelt. Dabei erkennt er, welche Services als Ursache für den Fehler infragekommen. Im nächsten Schritt kann er sich einzelne \textbf{Metriken} der Services ansehen, um eventuell eine Anomalie festzustellen. Im letzten Schritt kann er durch ansehen der \textbf{Logs} eine genaue Fehlerursache feststellen.
 \end{definition}
-
+Mithilfe dieser drei Säulen ist es nun einem Aussenstehenden möglich auf \enquote{die inneren Zustände eines Systems auf Basis seiner Ausgaben} zu schließen. Dazu ein kurzes Beispiel:\\
+Es wird ein Fehler bei einer Anfrage regisitriert. Der dafür zuständige Mitarbeiter kann nun mithilfe des \textbf{Tracings} feststellen um welches Request es sich handelt. Dabei erkennt er, welche Services als Ursache für den Fehler infragekommen. Im nächsten Schritt kann er sich einzelne \textbf{Metriken} der Services ansehen, um eventuell eine Anomalie festzustellen. Im letzten Schritt kann er durch ansehen der \textbf{Logs} eine genaue Fehlerursache feststellen.
 
 
 \section{Gouvernance}
@@ -149,15 +153,3 @@ Es entsteht also eine Abhängigkeit zwischen zwei Microservices. Ebendieser ange
 Kein Problem - \enquote{Design for Failure}. Ein Architekt muss in der Planung seines Services die Möglichkeit haben, das Risiko und die Auswirkungen einen Ausfalls sowohl seines eigenen Services, als auch seiner Abhängigkeiten einschätzen zu können. Diese Einschätzung sollte auf Daten basieren, welche sowohl Information bisheriger Ausfälle und deren Ursachen enthalten als auch Ausblicke geben können auf den aktuellen Stand und eventuelle zukünftige Ausfälle.
 
 Wie bereits Eingangs erwähnt ist bei der Betrachtung dieses Prinzips die Brille der Gouvernance und Observability aufgesetzt. Es ist ein wichtiger Bestandteil die Services innerhalb einer Unternehmensarchitektur so aufzubauen, dass diese trotz eins Fehlers ordnungsgemäß weiterlaufen und die Fähigkeit zur Recovery besitzen. Dieses Prinzip ist sogar dafür Veranwtortlich, dass Microservicepioniere wie Netflix innerhalb der Observability eine eigene, vierte Säule zu etablieren. Dabei handelt es sich um das sogenannte Chaos-Testing. Um dies kurz zu erläutern: Dabei handelt es sich um einen eigenen \enquote{Service}, welcher auf Basis von Chaos-Experimenten produktive Services ausschaltet und so die Recovery ebendieses Services und auch der davon abhängigen Services überprüfen kann. Dies bringt viele Vorteile mit sich und sorgt auch dafür, dass Services gut entwickelt sind. Diese Idee, wie das bewusste Einführen von Fehlern die generelle Qualität von Services verbessern kann, wird näher in \citetitle{AntifragileOrganization}\autocite{AntifragileOrganization} beschrieben.
-
-\begin{itemize}
-	\item Abgrenzung von Microservices gegenüber API's \\
-	Wenn von Microservice Gouvernance und Observability geredet wird, ist oftmals die unterleigende Architektur mit Fokus auf VM-Daten usw gemeint. Wird von APIS gesprchen hat es oftmals mit business logik undso zutun
-\end{itemize}
-\begin{itemize}
-	\item Welcher bereich soll observiert werden?
-	\begin{itemize}
-		\item Soll es um die hardware Daten (Memory, CPU, klassische cloud metriken) gehen oder um
-		\item Softwareinformationen bzgl. software logging und tracing
-	\end{itemize}
-\end{itemize}
