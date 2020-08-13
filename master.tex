@@ -62,10 +62,10 @@ Outline:
 		\item von Monolithen über SOA bis hin zu Microservices
 		\item Anhand eines versimplifizierten beispiels aufzeigen wie Zielarchitekturen aussehen
 	\end{itemize}
-	\item Def. Microservice, Gouvernance und Observability raushauen
+	\item Def. Microservice, Governance und Observability raushauen
 	\begin{itemize}
 		\item Dabei auf die verschiedenen Säulen der Observability achten
-		\item Wichtigstens Aspekte bei Gouvernance noch einmal herausstellen
+		\item Wichtigstens Aspekte bei Governance noch einmal herausstellen
 		\item Eigentliche Pros der Microservice-Def unter den Gesichtspunkten der G\&O evlt nicht mehr so gut
 	\end{itemize}
 	\item Wo liegt überhaupt das Problem (nochmal aus Einleitung aufgreifen), Herausarbeiten, evtl. ja schon passiert?
@@ -103,62 +103,49 @@ Fragen:
 
 \chapter{Einleitung}
 
-% CHAPTER: Microservice - Observability - Gouvernance
+% CHAPTER: Microservice - Observability - Governance
 \input{chapters/microservice_observability_gouvernance.tex}
 
-\section{Kriterien für gute Gouvernance}
+\section{Eine Lücke zwischen Governance und Observability}
 
-Um im weiteren Verlauf der Arbeit die bereits bestehende und auch die vorgeschlagene Lösung zur Gouvernance und Observability von Microservice miteinander vergleichen zu können müssen einige Kriterien eingeführt werden. Um diese Kriterien zu erarbeiten wird auf vorherige Definition der Gouvernance und Observability geschaut \marginpar{Ref auf G \& O Def.}. Wie bereits zuvor festgestellt wurde besteht die Observability aus drei Säulen - dem \textit{Logging}, dem \textit{Tracing} und den \textit{Metriken}. Ein System welches zum Ziel hat Microservices zu observieren muss also auch in diesem drei Bereichen etwas beitragen. 
+Im vorherigen Abschnitt wurden einige potenzielle Problempunkte beim Nutzen einer Microservicearchitektur identifiziert. Es sticht vor allem heraus, dass es für einen Verantwortlichen nur sehr schwer möglich ist fundierte Risikoeinschätzungen abzugeben. Es stellt sich im unternehmerischen Alltag oftmals die Frage, wer einen Fehler im System beheben muss. Diese Frage kann genau dann beantwortet werden, wenn klar ist wo der Fehler liegt. Im Abschnitt über Observability sind mithilfe der drei Säulen Möglichkeiten geschaffen einen fehlerhaften Service zu finden. Trotzdem kann auch mithilfe dieser Informationen nicht unbedingt immer die Ursache des Fehlers ausfindig gemacht werden. Ein sehr häufiges Ergebnis bei der Fehleranalyse im Kontext verteilter Systeme ist, dass mehr als ein Service als Fehlerursache in Frage kommt. Das bedeutet, dass der zuständige Mitarbeiter für die Fehleridentifizierung mit mehreren Teams in Kontakt treten muss und diese dann den Fehler in ihren Services so schnell wie möglich beheben können. \\
+Auch und vor allem bei Fehlern in einer Software als Kernbestandteil eines Unternehmens greift eine altbekannte Redensart: \textit{Zeit ist Geld}. Dass Zeit wirklich Geld bedeuetet und die Zeit, die bis zum beheben eines Fehlers vergeht so kurz wie möglich gehalten werden muss zeigen Zahlen eines Ausfalls der Amazon Website aus dem Jahr 2016. Dort führte eine Nichterreichbarkeit der Website für nur 20 Minuten zu einem Verlust von ca 3.5 Mio Euro \marginpar{QUELLE}.
 
-Des weiteren spielen Aspekte aus der Microservice Gouvernance eine Rolle für einene Technologie-Stack, welcher wie der hier vorgestellte versucht eine Brücke zwischen diesen beiden Bereichen zu bilden. Ein besonders großer und schwerwiegender Punkt der Microservice Gouvernance stellt eine dezentralisierte Verwaltung dar. Wie bereits \citeauthor{LeanixGouv} in seinem Artikel sagt:
-\enquote{
-	The main concept of these Microservices are the reusability of assets and tools which can be decentralized. The core theme of a decentralization governance is the concept of building and running it. This decentralized model is best suited for Microservices governances.
-}\autocite{LeanixGouv}
+An dieser Stelle, einer Schnittstelle zwischen Governance und Observability gilt es so wenig Zeit wie möglich zu verschwenden, um mehr Zeit bei der eigentlichen Fehlerbehebung zur Verfügung zu haben. Es sollte also innerhalb eines Unternehmens eine Möglichkeit geben diese Informationen schnell aufzufinden. Im folgenden werdene einige Anforderungen herausgestellt, welches ein Tools haben muss, um in diesem Schnittstellenbereich einen positiven Einfluss auf die Fehlerbehebung zu haben.
 
-Ein Tool welches in diesem Bereich helfen will, muss also als Entscheidungsstütze für dezentralisierte Serviecs funktionieren, um einen mehrwert zu schaffen. \\
-Des weiteren muss eine Wertschöpfung aus den gewonnen Daten gezogen werden können. Es stellt also einen wichtigen Faktor dar, alle gesammelten Daten so aufzubereiten, dass es für den Nutzer dieses Tools einen Mehrwert bietet, welcher darüber hinausgeht nur einen Einblick in ebendiese Daten zu erhalten. Beispiele dafür wären Anwendungen im Bereich der \textbf{Predicitve Maintance} oder der \textbf{Anomaly Detection}, usw.
+\section{Anforderungen an das Konzept}
 
-Tools, welche diesen Bereich abdecken müssen also in den folgenden drei großen Kriterien einen Mehrwert gegenüber bestehenden Lösungen bieten:
+Ein Tool, das sich in diese Lücke einfügt benötigt sowohl Komponenten aus dem eher der Governance zuzuschreibenden Bereich, als auch Elemente aus der Observability.
 
 \begin{enumerate}
-	\item Grundelgende Aspekte und Funktionen aus dem Bereich der Microservice Observability müssen abgedeckt sein. Dies beinhaltet die drei Säulen Logging, Tracing und Metriken.
-	\item Die dezentralisierte Natur von Microservices muss gefördert werden, sodass ein Tool Entscheidungen - technischer oder unternehmerischer Natur - unterstützen und postiv beeinflussen kann.
-	\item Gewonne Daten, egal aus welchen Bereich, müssen einen Mehrwert für den Nutzer darstellen, der über das reine Einsehen der gesammelten Daten hinausgeht.
+
+\item \textbf{\enquote{Zeit ist Geld}:}\\
+Im vorherigen Kapitel wurde diese Redensart bereits genutzt, um einen wichtige Anforderung zu verdeutlichen. Die Geschwindigkeit, in der ein Fehler innerhalb von Software identifiziert und behoben werden kann ist maßgeblich entscheidend für die Auswirkungen und die Tragweite des Fehlers. Die Auswirkungen sind nicht immer nur finazieller Natur. Auch im Falle von Sicherheitslücken in einem System gilt es den Ursprung eines Angriffs schnellstmöglich identifizieren zu können, um auch hier den Schaden möglichst gering zu halten. Wird also ein Tool entwickelt, dass in einem solchen Fall zur Anwendungen kommt muss es dem Endnutzer eine einfache, schnelle Möglichkeit bieten, die Ursache eines Fehlers unter hunderten möglichen Services zu finden. \\
+Das Finden des Services leitet auch direkt zum nächsten elementaren Bestandteil eines solchen Tools über.
+
+\item \textbf{Bereitstellen von Informationen - nicht nur generieren von Daten:}\\
+Ein solches Tool hat auch die Aufgabe, generierte Daten, seien es spezielle, extra gesammelte, oder bereits vorhande durch andere Tools zur Verfügung gestellte Daten so aufzubereiten, dass nutzbare Informationen daraus entstehen. Diese vorhandenen Informationen müssen fundiert und verlässlich sein, sodass auch unter Zeitdruck eine richtige Entscheidung für das weitere vorgehen getroffen werden kann. Hierbei kommt es nicht nur darauf an, Informationen für \textit{aktuelle} Entscheidungen bereitzustellen, sondern auch, aus vorhandenen Daten und Informationen vorhersagen generieren zu können, um im Fehlerfall nicht erst auf die Interaktion eines Endnutzers warten zu müssen, der einen Fehler identifizieren will, sondern um direkt proaktiv auf einen Nutzer zuzugehen mit der Information, dass ein Fehler vorleigt und wo die wahrscheinliche Ursache dafür liegt. Dazu können Ideen, aus der \textbf{Predictive Maintance} oder der \textbf{Anomaly Detection} genutzt werden.
+
+\item \textbf{Einhaltung von Standards:}\\
+Um die für diese Anforderungen notwendigen Informationen generieren zu können sind Rohdaten notwendig. Diese Rohdaten können, wie bereits erwähnt eigens für dieses Tool generiert werden, oder es können Daten, die von anderen Tools generiert werden verarbeitet werden. Damit dies möglich ist, muss klar sein, in welche Format die Daten aus \enquote{fremden} Tools vorhanden sind. Dies kann unter Umständen von Anbieter zu Anbieter unterschiedlich sein. Deshalb sollte ein neu entwickeltes Tools, um Kompatibilität mit anderen Tools zu erhalten, offenen und weit verarbeiten Standards folgen. Dies ermöglicht nicht nur ein erhöhtes Anwendungspotenzial, sonder erleichtert auch die Arbeit in der Entwicklung, da nur wenige Schnittstellen bereitgestellt werden müssen und eine hohe Anzahl an möglichen Kombinationen möglich ist.
+
+\item \textbf{Kaum manueller Aufwand zur Integration und Wartung:}\\
+Ein solches Tool wird mit hoher Wahrscheinlichkeit aus mehreren Komponenten bestehen. Eine Komponente wird als Zentrale fungieren, um Daten jeglichen Ursprungs entgegenzunehmen und auszuwerten. Eine andere Komponente kann beispielsweise in einem einzelnen Service verarbeitet werden, um Daten zu generieren. Bei der Einführung eines solchen Tools sollte es mit möglichst wenig manuellem Aufwand möglich sein, den vollen Funktionsumfang zu nutzen. Des weiteren sollte auch im laufenden Betrieb keine bis kaum manuelle Wartung nötig sein. Denn je komplexer die Integration eines solchen Tools ist, desto mehr Fehler können nur durch die Einführung oder Wartung injeziert werden. Die Fehlerquelle Mensch sollte möglichst elimiert werden können.
+
+\item \textbf{dezentrale Governance:}\\
+Ein neues Tool sollte die Grundelgende Dezentralität einer Microservicearchitektur unterstützen. Es muss sichergestellt werden, dass Zusammenhänge einfach und klar visualisiert werden können, damit Nutzer auch hier einen Mehrwert erzielen können.
+
 \end{enumerate}
 
-Auf Basis dieser drei Kriterien sollen nun bestehende Lösungen bewertet werden und mit der eigenen Lösungen verglichen werden, um festzustelle, ob die vorgeschlagene Lösungen
-\begin{enumerate}
-	\item den definiert Kriterien entspricht und
-	\item einen nicht vorhandenen Mehrwert gegenüber bestehenden Lösungen bietet.
-\end{enumerate}
+Diese Anforderungen stellen wichtige Elemente dar, um den Nutzen eines solchen Tools evaluieren zu können. Bevor nun das eigentliche Konzept erläutert werden, wird überprüft, inwiefern eine Lösung mit bereits bestehenden Tools konstruiert werden kann. Dazu werden die oben definierten Kriterien genutzt, um einen Vergleich durchführen zu können. Dieser Vergleich wird mithilfe einer \marginpar{Heißt das BalancedScoreCard} XX durchgeführt.
 
-Zuletzt ist es sehr wichtig, sollte ein neues Tool gewählt werden darauf zu achten, dass es offenen Standards folgt, um sicherzustelle, dass ein neues (oder bestehendes) System kompatibel ist und mit fremden Tools interagieren kann. Dies ist wichtig, damit auch Unternehmen sicherstellen können, dass der Aufwand, welcher mit der Einführung eines neuen Tolls kommt, ein lohnenswerter ist und eine langfristige Integration aufgrund von Kompatibilität als sinnvoll erachtet werden kann,
-
-\section{Verschiedene Ansätze zum lösen von Gouvernance und Observability}
-\subsection{Eigene Ansätze}
+\section{Verschiedene Ansätze zum lösen von Governance und Observability}
 \subsection{Ansätze verschiedener Unternehmen}
 \begin{itemize}
-	\item Elastic \marginpar{Anomaly Detection}
-	\item Neo4J \marginpar{ServiceRegistry (Idee für die Arbeit)}
-	\item Netflix \marginpar{Master of Microservice}
+	\item Elastic
+	\item Neo4J
 \end{itemize}
-Microservice Gouvernance und Themen der Observability sind bekannte Probleme und wurden schon oft von verschiedenen Organsiationen gelöst. Bewegt man sich im OpenSource bereich so findet sich mit der \ac{CNCF} ein Zusammenschluss, welcher versucht offene Standards für viele elementare Bereiche der Observability und der Gouvernance zu erreichen.
-
-Die \ac{CNCF} definiert sich selbst folgendermaßen:
-
-\enquote{
-Cloud native Technologien ermöglichen es Unternehmen, skalierbare Anwendungen in modernen, dynamischen Umgebungen zu implementieren und zu betreiben. Dies können öffentliche, private und Hybrid-Clouds sein. Best-Practises, wie Container, Service-Meshs, Microservices, immutable Infrastruktur und deklarative APIs, unterstützen diesen Ansatz.
-
-Die zugrundeliegenden Techniken ermöglichen die Umsetzung von entkoppelten Systemen, die belastbar, handhabbar und beobachtbar sind. Kombiniert mit einer robusten Automatisierung können Softwareentwickler mit geringem Aufwand flexibel und schnell auf Änderungen reagieren.
-
-Die Cloud Native Computing Foundation fördert die Akzeptanz dieser Paradigmen durch die Ausgestaltung eines Open Source Ökosystems aus herstellerneutralen Projekten. Wir demokratisieren modernste und innovative Softwareentwicklungs-Patterns, um diese Innovationen für alle zugänglich zu machen.
-}\autocite{CNCFGithub}
-
-Die \ac{CNCF} vereint also mehrere Tools, welche allen offenen Standards folgen, damit Unternehmen unabhängig von großen Cloudanbietern wie \ac{GCP}, \ac{AWS} oder Microsoft Azure eine Cloud-Infrastruktur aufbauen können. Ein paar Beispiele der \ac{CNCF} zugehörigen Projekte sind treibende, grundlegende Softwarelösungen wie Kubernetes oder OpenShift.
-
-Zusätzlich dient die \ac{CNCF} selbst auch als Organsiation, um verschiedene Industriestandards duchzusetzen. So wurde beispielsweise mithilfe der \textbf{Open Telemetry} ein Standard geschaffen, welcher Toolübergreifen das Sammeln und Auswerten verscheidener Tracingdaten ermöglicht. Dies ermöglicht einem Unternehmen, einen eigenen Stack zusammenzustellen, da es sich darauf verlassen kann, dass die Projekte, welche Teil der \ac{CNCF} sind miteinander kommunizieren und arbeiten können.
-
-\url{https://landscape.cncf.io/category=coordination-service-discovery,service-proxy,service-mesh,observability-and-analysis&format=card-mode}
+Microservice Governance und Themen der Observability sind bekannte Probleme und wurden schon oft von verschiedenen Organsiationen gelöst. Bewegt man sich im OpenSource bereich so findet sich mit der \ac{CNCF} ein Zusammenschluss, welcher versucht offene Standards für viele elementare Bereiche der Observability und der Governance zu erreichen.
 
 \section{Auf Basis der kriterien hergeleiteter eigener Ansatz mithilfe eines MicroserviceGraphen}
 
@@ -178,10 +165,10 @@ Innerhalb der Softwareentwicklung stellen sich die oben beschriebenen Probleme o
 \end{figure}
  All diese Elemente dienen als Grundlage zu der Idee, dass zur Risikoeinschätzung der Auswirkungen eines Fehelerfalls innerhalb einer Microservicearchitektur ein ähnlicher Dependency-Graph eine große Hilfe darstellen würde. Baut man den Graphen so auf, wie in obiger Analogie beschrieben, so erhält man einen Graphen, welcher Anzeigt ob und wie weit bestimmte Microservices miteinenander kommunizieren oder sogar voneinander Abhängigkeit sind. Dies beitet die Möglichkeit wertvolle Einblicke in das \textit{makroskopische} Zusammenspiel der einzelnen Komponenten einer Architektur zu erhalten. Ein Softwarearchitekt hat nun die Möglichkeit bei der Entscheidung über die Einführung eines neuen Service Informationen aus ebendiesem Graphen zu nutzen, um festzustellen ob eine zu Starke Abhängikteit zwischen Services vorhanden ist, oder ob es bei der Entwicklung bereits bestehende Abhängigkeiten gibt.
 \marginpar{Hier eventuell bissjen über Kopplung auf Codebassis labern wie das Auswirkungen auf Arhcitektur haben kann} 
-Der beschriebene Graph kann also als eine Art Service-Registry angesehen werden, welche Informationen zu der Beziehung zwischen verschiedenen Services beinhaltet. Gleichzeitig wird dadurch vor allem der Bereich der Microservice-Gouvernance betreten, wo eine Service-Registry eine zentrale Komponente darstellt. 
+Der beschriebene Graph kann also als eine Art Service-Registry angesehen werden, welche Informationen zu der Beziehung zwischen verschiedenen Services beinhaltet. Gleichzeitig wird dadurch vor allem der Bereich der Microservice-Governance betreten, wo eine Service-Registry eine zentrale Komponente darstellt. 
 
 Zusammenfassend lässt sich das Konzept also folgendermaßen beschreiben: \\
-Eine Schnittstelle zwischen Microservice-Gouvernance und -Observability wird mithilfe eines Dependency-Graphen gebildet. So spielen Aspekte einer Service-Registry und Elemente des Distributed-Tracing eine große Rolle in diesem Ansatz.
+Eine Schnittstelle zwischen Microservice-Governance und -Observability wird mithilfe eines Dependency-Graphen gebildet. So spielen Aspekte einer Service-Registry und Elemente des Distributed-Tracing eine große Rolle in diesem Ansatz.
 
 \chapter{Idee und POC eines Microservice-Dependency Graphen}\label{chap:KonzepTool}
 
