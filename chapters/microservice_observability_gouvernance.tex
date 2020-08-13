@@ -67,10 +67,40 @@ Diese nächste \enquote{Entwicklungsstufe} auf dem Weg zur Microservicearchitekt
 Der Begriff und der Nutzen von Observability für Services lässt sich anhand des folgendes Zitates sehr gut nachvollziehen.
 
 \begin{quote}
-	\enquote{Collecting data is cheap, but not having it when you need it can be expensive.}\autocite[S. 373]{microservice_enterprise}
+	\enquote{Collecting data is cheap, but not having it when you need it can be expensive.}\autocite[S. 373]{microservice_enterprise} - \textit{\citeauthor{microservice_enterprise}}
+
+	\enquote{Observability is the measure of how well internal states [...] of a system can be inferred by knowledge of its external outputs [...].}\autocite[S. 35]{Yordanova2016} - \textit{\citeauthor{Yordanova2016}}
 \end{quote}
 
-Innerhalb einer jeden Technologie wird uns durch Standards \marginpar{CNCF} eröglicht wichtige Einsichten in Services zu erhalten. Wird jedoch darauf verzichtet Daten aus einem Service zu sammeln, so kann es im Fehlerfall die Konsquenz haben, dass Fehler erst garnicht entdeckt oder bemerkt, geschweige denn gelöst werden.
+Innerhalb einer jeden Technologie wird uns durch Standards \marginpar{CNCF} eröglicht wichtige Einsichten in Services zu erhalten. Wird jedoch darauf verzichtet Daten aus einem Service zu sammeln, so kann es im Fehlerfall die Konsquenz haben, dass Fehler erst garnicht entdeckt oder bemerkt, geschweige denn gelöst werden. Die Observability von Services, welche innerhalb einer Applikation genutzt werden ist also von essenzieller Bedeutung. Nun kommt die Frage auf, was genau ist Observability? Welche Aspekte meines Service muss ich überwachen, um zuversichtlich sien zu können, einen Fehlerfall schnell bemerken zu können und diesen dann durch die gesammelten Daten schnell analysieren zu können?\\
+In \citetitle{Sridharan2018} wird beschrieben, wie sich Services in verteilten Systemen observieren lassen. Dazu nimmt der Autor eine Unterteilung in drei Säulen vor.
+
+\begin{definition}[Die drei Säulen der Observability]\autocites[Chapter 4: Three Pillars of Observability]{Sridharan2018}[S. 373f]{microservice_enterprise}
+	Um erfolgreich auf interne Zustände schließen zu können, müssen Daten existieren auf deren Basis Schlussfolgerungen gezogen werden können. Diese Daten werden aus drei verschiedenen Bereichen erhoben:
+
+	\newcounter{pillarsCounter}
+
+	\begin{enumerate}
+		\item \textbf{Logging:}\\
+		Das Zeil des Loggings besteht darin, Ereignisse zu dokumentieren. Es ist dabei nicht von Bedeutung, um welche Events es sich handelt. Zusätzlich zu den eigentlichen Daten des Ereigisses, welche unterschiedlichster Art sein können, ist es möglich Metadaten zu loggen, welche dem Ereigis zusätzlichen Kontext verleihen oder einen sonstigen Mehrwert bieten. Dazu können z.B. Information zum Zeitpunkt des Ereigisses (\textit{timestamp}), Ergebnis des Ereigisses (\textit{status}), usw. sein. \\ Ein Vorteil des Loggings bestehen unter anderem darin, dass diese extrem einfach zu generieren sind. Ein Nachteil des Loggings besteht darin, das Logs an sich keine zusätzliche Aussagekraft haben, außer ihrem direkten Inhalt. Es ist schwer rein anhand von Logs ein kommplexes Fehlerbild in einem verteilten System zu finden und korrekte Maßnahmen zur Behebung zu treffen.
+		\item \textbf{Metriken:}\\
+		Metriken stellen eine numerische representation von Daten dar, welche über bestimmte Zeitintervalle gemessen wurden. Metriken können also als Indikator verwendet werden, wie gut oder schlecht ein Services performt. Populäre Metriken wären z.B. die Anzahl der Anfragen, die ein Service in einer Minute verarbeitet, oder die durschnittliche Antwortzeit eines Service (seine Latenz). Das zweite Beispiel zeigt sogar ein zusammenspiel zwischen zwei Säulen auf. Diese Metrik kann als abgeleitete Eigenschaft aus Daten des Loggings gesehen werden, da die Latenz als Differenz zwischen dem Zeitpunkt der Anfrage und dem Zeitpunkt der Antwort angesehen werden kann.
+		\setcounter{pillarsCounter}{\value{enumi}}
+	\end{enumerate}
+
+	\textbf{Logging} kann also als datenaggregierende Säule angesehen werden. \textbf{Metriken} hingegen nutzen (unter anderem) die aggregierten Daten, um neue wertvollere Informationen abzuleiten. Die Kombination zwischen diesen beiden Säulen bietet einem Aussenstehenden einen guten Einblick in den internen Zusatand \textit{eines} Services. Wie bereits bei der Defintion eines Microservices erwähnt ist es nicht unüblich hunderte kleine Services beobachten zu müssen. Es wäre allerdings sehr unpraktisch nur die einzelnen Services in Isolation zu betrachten, da es sich um stark vernetzte und voneinander abhängige Services handelt. Deshalb existieren die dritte Säule, um auch serviceübergreifen Daten zu aggregieren und diese zu verwertbaren Informationen umzuwandeln.
+
+	\begin{enumerate}
+		\setcounter{enumi}{\value{pillarsCounter}}
+		\item \textbf{Tracing:}\\
+		Betrachtet man die bisherigen Säulen, so lässt sich ein Trend auf der Betrachtungsebene feststellen. Das Logging fokussiert sich auf die Sammlung der Daten einzelner Ereignisse, der kleinsten Einheit. Die Metriken arbeiten nun ereignisübergreifend und wandeln die Daten zu nutzbaren Informationen um, damit Einsichten in das Verhalten eines Services vorhanden ist - die mittlere Einheit. Der nächste logische Schritt wäre nun, da Services in einem verteilten System miteinander vernetzt sind, eine Anfrage von Beginn bis zur endgültigen Antwort serviceübergreifend zu observieren, quasi eine End-to-End Betrachung. Genau diese Betrachtung wird mithilfe von Tracing ermöglicht. Eine \textit{Trace} (\enquote{Spur}) ist eine Liste zusammenhängender, verteilter Eregnisse, welche als Repräsentant einer End-to-End Anfrage angesehen werden können.
+	\end{enumerate}
+
+	Mithilfe dieser drei Säulen ist es nun einem Aussenstehenden möglich auf \enquote{die inneren Zustände eines Systems auf Basis seiner Ausgaben} zu schließen. Dazu ein kurzes Beispiel:\\
+	Es wird ein Fehler bei einer Anfrage regisitriert. Der dafür zuständige Mitarbeiter kann nun mithilfe des \textbf{Tracings} feststellen um welches Request es sich handelt. Dabei erkennt er, welche Services als Ursache für den Fehler infragekommen. Im nächsten Schritt kann er sich einzelne \textbf{Metriken} der Services ansehen, um eventuell eine Anomalie festzustellen. Im letzten Schritt kann er durch ansehen der \textbf{Logs} eine genaue Fehlerursache feststellen.
+\end{definition}
+
+
 
 \section{Gouvernance}
 
