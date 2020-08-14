@@ -108,11 +108,24 @@ Es wird ein Fehler bei einer Anfrage regisitriert. Der dafür zuständige Mitarb
 
 \section{Governance}
 
-Eine Einführung von Microservices in ein Unternehmen kann sehr viele Vorteile besitzen. Sollte sich ein Unternehmen dazu entschließen, von der bisherigen Architektur auf eine Microservicearchitektur umzustellen, bringt dies auch einige Herausforderungen mit sich. Sind in einem Unternehmen bisher nur Monolithen bekannt, so kann die durch Microservices hinzukommende Komplexität schnell zu einem Problem werden. Zumal es sich hierbei um eine immense Anzahl neuer Services, am Beispiel von Netflix sogar mehr als 700 handeln kann. Es stellt sich nun also auch aus der Sicht eines Unternehmens die Frage, wer ist zuständig für einen bestimmten Service? Wie hängen die Services zusammen? Welche Services sind überhaupt vorhanden? Wie können Fehler in einzelnen Services erkannt werden und deren Auswirkungen bestimmt werden?
+Nun können Services observiert werden und ein Unternehmen kann sicherstellen, dass Fehler gefunden werden können, wenn sie auftreten. Nun steht es vor der Aufgabe einen identifizierten Fehler an das richtige Team weiterzuleiten, sodass dieser schnellstmöglich behoben werden kann. Der Vorgang des Findens des Veranwtortlichen ist von immenser Bedeutung, da dort auch die Expertise für einen bestimmten Service liegt. Dies stellt einen wichtigen Teilbereich der Governance dar. Eine klare Defintion der Zustädnigkeiten gestaltet sich aber bei größeren Unternehmen und einer hohen Anzahl an Services immer schwieriger. Im folgenden Abschnitt wird versucht Grundelgende Bestandteile von Microservice Governance herauszuarbeiten, sodass klar ist, was darunter zu verstehn ist.
 
-All diese Frage gehören zu dem Bereich der Microservice-Governance und sollten sich im Vorfeld eines Umstiegs auf eine Microservicearchitektur klären lassen. In \citetitle{microservice_enterprise} wird unter der Governance folgendes verstanden:
+In \citetitle{microservice_enterprise} wird beschrieben, dass viele Konzepte, welche für die Governance mit \ac{SOA} entwickelt wurden auch auf Microservices anwendbar sind. Um zu verstehen, worum es sich bei Governance überhaupt handlet wird zuerst eine Wortdefinition genutzt:
+
+\begin{definition}[Governance] Dazu wird zunächst eine Defintion aus dem Camebrigde Wörterbuch entnommen:
+	\enquote{the way that organizations or countries are managed at the highest level, and the systems for doing this}\autocite{camebdrigeGovernance}
+\end{definition}
+
+Bei Governance handelt es sich also um Möglichkeiten, wie Organisationen verwaltet werden. Nun stellt sich die Frage, wie sich Governance in der IT abbilden lässt und was genau es im Bezug auf Microservice Governance bedeutet. Software und insbesondere Microservices müssen verwaltet werden. Vor allem bei der hohen Anzahl an Microservice ist eine klare Form der Verwaltung wichtig. Um Services erfolgreich verwalten zu können sind einige Elemente zentral zu verwalten. Es kann allerdings nicht alles zentral verwaltet werden, wie es bei Monolithen der Fall war. Eine zentrale Verwaltung bietet sich genau dann an, wenn ein fest vorgeschriebenes Toolset in einer (oder wenigen) Programmiersprachen genutzt wird. Bei Microservices steht es dem implementierenden Team frei, die Technologie zu wählen, die ihnen am passensten erscheint für den Anwendungsfall. Dies führt in der Governance allerdings zu Problemen, da es für ein Unternehmen nicht möglich ist, für jede mögliche Kombination von Tools entsprechende Standards festzulegen. Deshalb gibt es die sogenannte \textit{dezentralisierte Gouvernacen}, damit Unternehmen einen Teil zentral verwalten können, und andere wichtige Teile dezentral von den Entwicklerteams entschieden werden können.
 
 \begin{definition}[Dezentralisierte Governance]
+	Dezentrale Governance bedeutet, dass Services in folgenden Punkten nicht zentral gesteuert werden, sondern von den Entwickerteams übernommen werden:
+	\begin{itemize}
+		\item \textbf{Entwurf eines Services:}\\
+		Der Entwurf eines Services wird nicht zentral gesteuert. Dies steht ganz im Rahmen der Defintion eines Microservice, da die Entscheidung über die sinnvollsten Technologien für die Aufgabe bei den Entwicklern liegen soll. Es gilt bei dem Design bereits darauf zu achten, welche Schnittstellen und Abhängigkeiten der eigene Service hat, um später schnelle Fortschritte während der Entwicklung machen zu können.
+		\item \textbf{Entwicklung eines Services:}\\
+		Auch die Entwicklung eines Services muss vom zuständigen Team überwacht werden. Dies ermöglicht schnellere Entscheidungen und einfachere Prozesse. So muss auch bei Problemen nicht ein Umweg über eine höhere Instanz gewählt werden, sondern es kann direkt mit dem zuständigen Team der Abhängigkeit gesprochen werden.
+	\end{itemize}
 	Die dezentralisierte Governance setzt sich unter anderem aus vier Kernmodulen \autocite[S. 154]{microservice_enterprise} zusammen. Dabei handelt es sich um:
 	\begin{enumerate}
 		\item die Observability
