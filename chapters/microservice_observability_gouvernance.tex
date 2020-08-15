@@ -119,26 +119,31 @@ In \citetitle{microservice_enterprise} wird beschrieben, dass viele Konzepte, we
 Bei Governance handelt es sich also um Möglichkeiten, wie Organisationen verwaltet werden. Nun stellt sich die Frage, wie sich Governance in der IT abbilden lässt und was genau es im Bezug auf Microservice Governance bedeutet. Software und insbesondere Microservices müssen verwaltet werden. Vor allem bei der hohen Anzahl an Microservice ist eine klare Form der Verwaltung wichtig. Um Services erfolgreich verwalten zu können sind einige Elemente zentral zu verwalten. Es kann allerdings nicht alles zentral verwaltet werden, wie es bei Monolithen der Fall war. Eine zentrale Verwaltung bietet sich genau dann an, wenn ein fest vorgeschriebenes Toolset in einer (oder wenigen) Programmiersprachen genutzt wird. Bei Microservices steht es dem implementierenden Team frei, die Technologie zu wählen, die ihnen am passensten erscheint für den Anwendungsfall. Dies führt in der Governance allerdings zu Problemen, da es für ein Unternehmen nicht möglich ist, für jede mögliche Kombination von Tools entsprechende Standards festzulegen. Deshalb gibt es die sogenannte \textit{dezentralisierte Gouvernacen}, damit Unternehmen einen Teil zentral verwalten können, und andere wichtige Teile dezentral von den Entwicklerteams entschieden werden können.
 
 \begin{definition}[Dezentralisierte Governance]
-	Dezentrale Governance bedeutet, dass Services in folgenden Punkten nicht zentral gesteuert werden, sondern von den Entwickerteams übernommen werden:
+	Dezentrale Governance bedeutet, dass Services in folgenden Punkten nicht zentral gesteuert werden, sondern von den Entwickerteams übernommen werden:\autocites[S. 154]{microservice_enterprise} [Decentralized Governance]{FowlerMicrservices}
+	
 	\begin{itemize}
 		\item \textbf{Entwurf eines Services:}\\
 		Der Entwurf eines Services wird nicht zentral gesteuert. Dies steht ganz im Rahmen der Defintion eines Microservice, da die Entscheidung über die sinnvollsten Technologien für die Aufgabe bei den Entwicklern liegen soll. Es gilt bei dem Design bereits darauf zu achten, welche Schnittstellen und Abhängigkeiten der eigene Service hat, um später schnelle Fortschritte während der Entwicklung machen zu können.
 		\item \textbf{Entwicklung eines Services:}\\
 		Auch die Entwicklung eines Services muss vom zuständigen Team überwacht werden. Dies ermöglicht schnellere Entscheidungen und einfachere Prozesse. So muss auch bei Problemen nicht ein Umweg über eine höhere Instanz gewählt werden, sondern es kann direkt mit dem zuständigen Team der Abhängigkeit gesprochen werden.
+		\item \textbf{Deployment eines Services}:\\
+		Befindet sich ein Service nun in der Entwicklung ist es wichtig schnell einen möglichst automatisierten Ansatz für das Deployment des Services aufzubauen. Auch hier ist es von Vorteil, dass es eine dezentral organisierte Komponente ist, da aufgrund der freien Wahl der Programmiersprache und der Technologie entsprechendes Tooling verwendet werden muss. Auch kommt es immer auf die Art und den Inhalt es Services an, welcher auch Anforderungen an das Deployment stellen kann.
 	\end{itemize}
-	Die dezentralisierte Governance setzt sich unter anderem aus vier Kernmodulen \autocite[S. 154]{microservice_enterprise} zusammen. Dabei handelt es sich um:
+	Im Gegensatz zu diesen Elementen gibt es auch in der dezentralen Governance Elemente, welche zentral verwaltet werden müssen. Dazu zählen:
+
 	\begin{enumerate}
 		\item die Observability
 		\item eine Service-Registry und Service-Discovery
 		\item das API-Management und
 		\item die Entwicklungszyklen
 	\end{enumerate}
-	Diese vier Kernmodule sind innerhalb eines Microservice Ansatzes nicht dezentral verwaltbar. Weitere Bestandteile eines Microservice, welche im Bereich der Governance liegen sind design, development und deployment eines Services. Hierfür sollt es keine zentrale Verwaltung geben,\autocites[S. 154]{microservice_enterprise} [Decentralized Governance]{FowlerMicrservices}sonder die Veranwtortlichkeit sollte im entwickelnden Team liegen.
+
+	
 \end{definition}
 
-Eine dezentralisierte Governance wie sie bei Microservices genutzt wird hat einie Vorteile gegenüber dem früheren komplett zentrierten Governance-Ansatz. So kann zum Beispiel für jeden Anwendungsfall die Tools von dem zuständig Team selbst gewähl werde und es wird nicht von einer unternehmensweiten Grundsatzentscheidung bestimmt, dass nur ein bestimmer Technologieverbund genutzt werden kann. Trotz dieser Freiheit bleiben wichtige Elemente wie die Observability eines Services in einem zentralisierten skalibaren Service verfügbar, sodass wichtige Daten immer von allen Services zur Verfügung stehen. Hier ist eine zentrale Vorschrift sogar förderlich, da so sichergestellt wird, dass keine \enquote{Insights} verloren gehen, da ein Subset der im Unternehmen vorhanden Service andere Tools für das Monitoring benutzen als der Rest.
+Dieses Konzepte der dezentralen Verwaltung von servicespezifischen Aufgaben ermöglicht es den Teams die Idee von Microservices umzusetzen. Sie haben die Chance ohne Einschränkungen seitens des Unternehmens den Technologieverbund zu wählen, welcher ihnen für den Anwendungsfall am sinnvollsten erscheint. Trotz dieser Freiheit entsteht kaum ein Tradeoff dabei, da weiterhin zentrale Komponenten zur Kontrolle und Steuerung exisiteren, welche mit jedem Service kompatibel sind. Dies wird unter anderem durch das verwenden von offenen Standards ermöglicht, sodass eine große Reihe an Tools miteinander kompatibel sind.
 
-Im Rahmen dieser Arbeit wird in Kaptiel \vref{chap:KonzepTool} ein Tool vorgestellt, welches ein Problem im Bereich der Governance in Verbindung mit Elementen aus der Observability lösen soll. Dabei ist eine weitere zentralisiert verwaltete Komponente der Governance relevant. Dabei handlet es sich eine Art Service-Registry mit erweiterter Observability Funktionalität.
+Es lässt sich also feststellen, dass trotz der dezentralen Natur von Microservice einige Komponenten sinnvollerweise zentral angelegt werden.
 
 \section{Betrachtung bestimmter Gesichtspunkte im Rahmen der Governance und Observability}
 
