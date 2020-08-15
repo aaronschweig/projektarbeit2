@@ -113,7 +113,7 @@ Auch und vor allem bei Fehlern in einer Software als Kernbestandteil eines Unter
 
 An dieser Stelle, einer Schnittstelle zwischen Governance und Observability gilt es so wenig Zeit wie möglich zu verschwenden, um mehr Zeit bei der eigentlichen Fehlerbehebung zur Verfügung zu haben. Es sollte also innerhalb eines Unternehmens eine Möglichkeit geben diese Informationen schnell aufzufinden. Im folgenden werdene einige Anforderungen herausgestellt, welches ein Tools haben muss, um in diesem Schnittstellenbereich einen positiven Einfluss auf die Fehlerbehebung zu haben.
 
-\section{Anforderungen an das Konzept}
+\section{Anforderungen an das Konzept}\label{chap:Anforderungen}
 
 Ein Tool, das sich in diese Lücke einfügt benötigt sowohl Komponenten aus dem eher der Governance zuzuschreibenden Bereich, als auch Elemente aus der Observability.
 
@@ -164,25 +164,64 @@ Innerhalb der Softwareentwicklung stellen sich die oben beschriebenen Probleme o
 	\label{fig:GraphViz}
 \end{figure}
  All diese Elemente dienen als Grundlage zu der Idee, dass zur Risikoeinschätzung der Auswirkungen eines Fehelerfalls innerhalb einer Microservicearchitektur ein ähnlicher Dependency-Graph eine große Hilfe darstellen würde. Baut man den Graphen so auf, wie in obiger Analogie beschrieben, so erhält man einen Graphen, welcher Anzeigt ob und wie weit bestimmte Microservices miteinenander kommunizieren oder sogar voneinander Abhängigkeit sind. Dies beitet die Möglichkeit wertvolle Einblicke in das \textit{makroskopische} Zusammenspiel der einzelnen Komponenten einer Architektur zu erhalten. Ein Softwarearchitekt hat nun die Möglichkeit bei der Entscheidung über die Einführung eines neuen Service Informationen aus ebendiesem Graphen zu nutzen, um festzustellen ob eine zu Starke Abhängikteit zwischen Services vorhanden ist, oder ob es bei der Entwicklung bereits bestehende Abhängigkeiten gibt.
-\marginpar{Hier eventuell bissjen über Kopplung auf Codebassis labern wie das Auswirkungen auf Arhcitektur haben kann} 
 Der beschriebene Graph kann also als eine Art Service-Registry angesehen werden, welche Informationen zu der Beziehung zwischen verschiedenen Services beinhaltet. Gleichzeitig wird dadurch vor allem der Bereich der Microservice-Governance betreten, wo eine Service-Registry eine zentrale Komponente darstellt. 
 
 Zusammenfassend lässt sich das Konzept also folgendermaßen beschreiben: \\
 Eine Schnittstelle zwischen Microservice-Governance und -Observability wird mithilfe eines Dependency-Graphen gebildet. So spielen Aspekte einer Service-Registry und Elemente des Distributed-Tracing eine große Rolle in diesem Ansatz.
 
-\chapter{Idee und POC eines Microservice-Dependency Graphen}\label{chap:KonzepTool}
+\chapter{Konzeption einer graphbasierten Serviceregistry}
 
-Nun, da Grundlegende Begriffe geklärt wurden, werden Kriterien heruasgeabreitet, welche zur spätere Einschätzung und Bewertung eines vorgeschlagenen Ansatzes diesen sollen. Gleichzeitig werden diese Kriterien genutzt, um beretis bestehende Ansätze zu untersuchen und auf ihre Anwendbarkeit zu überprüfen.
+Im folgenden Kapitel wird versucht auf Basis der in \vref{chap:Anforderungen} beschriebenen Anforderungen ein Konzept für ein Tool zu erarbeiten, welches als \enquote{intelligente} Service-Registry fungiert. Dazu wird zunächst die eine mögliche Technologiewahl erläutert. Danach werden noch einige möglichen Funktionenen mithilfe von Beispielen vorgestellt.
 
-Im Rahmen der Observability stehen drei große Säulen im Fokus:
-\begin{enumerate}
-	\item Logging
-	\item Tracing
-	\item Metriken
-\end{enumerate}
+\section{Wieso wird ein Graph verwendet?}
 
-Diese drei Elemente spielen eine wichtige Rolle um eine Lösung im Bereich der Observability liefern zu können. Im Rahmen dieser Arbeit wird vor allem ein Augenmerk auf den Status einer Microservice-Archtitektur gelegt, welche nicht zum Ziel hat, die softwaretechnische Ursache des Problems zu finden, sondern den Service oder den Container zu identifizieren, welcber für den Ausfall veranwtortlich ist. Gleichzeitig gibt es die Anforderung, dass die Abhängigkeiten verschiedener Microservices voneinander dargestellt und in Form von nutzbaren, auswertbaren Daten vorliegen. Hierbei kommt allerdings ein Punkt der Observability zu tragen, da dies, wie später näher erläutert wird auch mithilfe von Tracing erreicht werden kann.\\
-Außerdem muss es möglich sein, die gewonnen Daten nutzbar zu machen, um nicht nur feststellen zu können, wecher Service die Ursache des Problems ist, sonder auch, um die Auswirkungen auf andere Services feststellen zu können. Es muss also ein einfacher Weg geschaffen werden, damit die Auswirkungen eines Fehlers schnell festgestellt werden können. 
+Das Fundament des vorgeschlagenen Konzept bildet die Abbildung der Services und deren Zusammenhänge in einem Graphen. Ähnlich, wie Microservices danach bestrebt sind, die bestmögliche Technologie für die Anforderung zu wählen, muss auch für ein neues Tool, eine passende Technologie gefunden werden. Um zu verstehen, wieso eine graphbasierte Darstellung für den Anwedungfall gut geeignet ist, soll ein Graph und Graphdatenbanken definiert werden.
+
+\begin{definition}[gerichteter Graph]\autocite[Kapitel 1.2]{Bang-Jensen2007}
+	Ein gerichteter Graph ist ein geordnetes Tupel $$G = (V,A)$$ für das gilt:
+	\begin{itemize}
+		\item $V(G)$ ist eine nichtleere Menge, deren Elemente man Knoten (engl. \textit{verticies}) nennt
+		\item und einer endlichen Menge $A(G) \subseteq V \times V$ von geoordneten Tupeln verschiedener Knoten, die man Kanten (engl. \textit{arcs}) nennt.
+	\end{itemize}
+
+	Bei einem gerichteten Graphen handelt es sich um ein \textbf{geordnetes Tupel} $v \in A$, wobei die \enquote{Richtung} vorgegeben ist durch die Reihenfolge im Tupel. Bei einem ungerichtetetn Graphen besteht $A$ aus einer Menge \textbf{ungeordneter Tupel}.
+\end{definition}
+
+Diese mathematische Definition beschreibt eine interessante Datenstruktur für die Informatik und die Softwareentwicklung. Diese Datenstruktur versucht also die vorgegebenen Eigenschaften eines Graphen wie in der graphentheorie Beschrieben zu realisieren. \\
+Eine Unterkategorie bei den gerichteten Graphen sind sowohl zyklische, als auch azyklische gerichtete Graphen. Dabei handelt es sich um Repräsentaten eines gerichteten Graphen, welche keinen gerichteten Kreis enthalten. Betrachtet man nun den Anwedungsfall des zu konzeptionierenden Tools, so stellt man fest, dass ein azyklischer Graph nicht die richtige Wahl wäre. Dies sollim foglenden erläutert werden.
+
+\begin{example}
+	Beginnen wir mit der formalen Defitionen des Graphen, welcher die Beziehung zwischen Microservices abbilden soll. Der Graph $G$ besteht dann also aus: 
+	\begin{itemize}
+		\item der Menge $V(G)=\text{Menge aller Services in einem Unternehmen}$
+		\item der Menge $A(G)=\{a,b \in \mid \text{a benötigt Informationen aus b}\}$
+	\end{itemize}
+	Der Graph beinhaltet also Informationen über einen Service, als auch über seine Verbindungen mit anderen Services.
+\end{example}
+
+
+\begin{itemize}
+	\item Eine Idee von Elastic vorstellen $\Rightarrow$ APM zusammen mit ML-Nodes können zur Anomaly-Detection und Predicitve Maintance genutzt werden. Lösen die das eigentliche Problem, wenn ja in welchem Ausmaß
+	\item Kurze Einführung in Graphdatenbanken, im speziellen Neo4J. Wieso passen die so gut? referenzieren auf Bilder und \enquote{Abhängigkeiten} Wie kann damit eine Lösung konstruiert werden?
+	\begin{itemize}
+		\item Statischer Ansatz $\Rightarrow$ von den Entwicklern definierte Abhängigkeiten werden in der Service-Definition angegeben. Der Graph kann aus diesen SD's erstellt werden. Hier gibt es Probleme: Manuelle Veranwtortlichkeit widerspricht eigentlicher Idee von Risikoeinschätzung, da ein neuer Fehler Mensch eingebaut wird.
+		\item Automatischer Nutzungsbasierter, somit dynamischer Aufbau des Graphen. Prinzip ähnlich wie bei Prometheus (populäres Tool zum sammeln von Metriken). Konzept ähnlich wie Distributed Tracing. Dort werden alle Traces mit ihren Spans zusammengefasst und zentral ausgewertet. Kombination aus dieser Idee mit Prometheus-Ansatz sieht dann folgendermaßen aus:
+		
+		Jeder Service exposed einen \texttt{/traffic}-Endpoint der unstrukturierte Daten bzgl. der Netzwerkaktivität enthält. Diese können dann in einem Service der für den Aufbau des Graphen zuständig ist zu ebendiesem umgewandelt werden.
+		\item Es kann zusätzlich überlegt werden, ob anstatt dieses \texttt{PULL}-Verfahrens eine Push Variante gewählt wird, welche ähnlich wie \texttt{fluentd} als Sidecar in einer Containererisierten Umgebung läuft. Die könnte dann periodisch die Netzwerkdaten pushen, wenn sie Zugriff darauf hat.
+	\end{itemize}
+	\item Es kann überlegt werden welche Metadaten zusätzlich im Rahmen dieses Graphen eine sinnvolle Ergänzugn bieten würden, sodass ein weiterer Mehrwert geschaffen werden kann. (Ist das noch im Rahmen der Arbeit? Kommt das eher in den Ausbilck mit ein paar Ideen?)
+	\item Wie können jetzt die Sachen in dem coolen Graphen genutzt werden?
+	\begin{itemize}
+		\item Kurze \texttt{CYPHER-QUERIES} Aufschreiben:
+		\begin{itemize}
+			\item Wie finde ich affectete services raus
+			\item was passiert wenn ein Service X ausfällt
+			\item Was ist die Zentralste Komponente in meinem Unternehmen
+			\item usw.
+		\end{itemize}
+	\end{itemize}
+\end{itemize}
 
 \chapter{Bewertung und Einschätzung der Arbeit, sowie Ausbilck auf künfitge Arbeiten}
 %	Literaturverzeichnis
