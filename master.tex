@@ -51,6 +51,8 @@
 \ohead{\headmark}
 \pagenumbering{arabic}
 
+
+\chapter{Einleitung}
 Outline:
 \begin{itemize}
 	\item Einleitung schreiben, wieso das Thema wichtig ist und wieso die Schnittstelle so relevant ist
@@ -63,45 +65,8 @@ Outline:
 		\item Anhand eines versimplifizierten beispiels aufzeigen wie Zielarchitekturen aussehen
 	\end{itemize}
 	\item Def. Microservice, Governance und Observability raushauen
-	\begin{itemize}
-		\item Dabei auf die verschiedenen Säulen der Observability achten
-		\item Wichtigstens Aspekte bei Governance noch einmal herausstellen
-		\item Eigentliche Pros der Microservice-Def unter den Gesichtspunkten der G\&O evlt nicht mehr so gut
-	\end{itemize}
-	\item Wo liegt überhaupt das Problem (nochmal aus Einleitung aufgreifen), Herausarbeiten, evtl. ja schon passiert?
-	\item Herausarbeiten von Kriterien für ein Tool im Schnittstellenbereich zwischen G\&O
 	\item Wie sehen potenzielle Lösungen unter Berücksichtigung der auf Basis des Problems hergeleiteten Kriterien aus?
-	\begin{itemize}
-		\item Eine Idee von Elastic vorstellen $\Rightarrow$ APM zusammen mit ML-Nodes können zur Anomaly-Detection und Predicitve Maintance genutzt werden. Lösen die das eigentliche Problem, wenn ja in welchem Ausmaß
-		\item Kurze Einführung in Graphdatenbanken, im speziellen Neo4J. Wieso passen die so gut? referenzieren auf Bilder und \enquote{Abhängigkeiten} Wie kann damit eine Lösung konstruiert werden?
-		\begin{itemize}
-			\item Statischer Ansatz $\Rightarrow$ von den Entwicklern definierte Abhängigkeiten werden in der Service-Definition angegeben. Der Graph kann aus diesen SD's erstellt werden. Hier gibt es Probleme: Manuelle Veranwtortlichkeit widerspricht eigentlicher Idee von Risikoeinschätzung, da ein neuer Fehler Mensch eingebaut wird.
-			\item Automatischer Nutzungsbasierter, somit dynamischer Aufbau des Graphen. Prinzip ähnlich wie bei Prometheus (populäres Tool zum sammeln von Metriken). Konzept ähnlich wie Distributed Tracing. Dort werden alle Traces mit ihren Spans zusammengefasst und zentral ausgewertet. Kombination aus dieser Idee mit Prometheus-Ansatz sieht dann folgendermaßen aus:
-			
-			Jeder Service exposed einen \texttt{/traffic}-Endpoint der unstrukturierte Daten bzgl. der Netzwerkaktivität enthält. Diese können dann in einem Service der für den Aufbau des Graphen zuständig ist zu ebendiesem umgewandelt werden.
-			\item Es kann zusätzlich überlegt werden, ob anstatt dieses \texttt{PULL}-Verfahrens eine Push Variante gewählt wird, welche ähnlich wie \texttt{fluentd} als Sidecar in einer Containererisierten Umgebung läuft. Die könnte dann periodisch die Netzwerkdaten pushen, wenn sie Zugriff darauf hat.
-		\end{itemize}
-		\item Es kann überlegt werden welche Metadaten zusätzlich im Rahmen dieses Graphen eine sinnvolle Ergänzugn bieten würden, sodass ein weiterer Mehrwert geschaffen werden kann. (Ist das noch im Rahmen der Arbeit? Kommt das eher in den Ausbilck mit ein paar Ideen?)
-	\end{itemize}
-	\item Wie können jetzt die Sachen in dem coolen Graphen genutzt werden?
-	\begin{itemize}
-		\item Kurze \texttt{CYPHER-QUERIES} Aufschreiben:
-		\begin{itemize}
-			\item Wie finde ich affectete services raus
-			\item was passiert wenn ein Service X ausfällt
-			\item Was ist die Zentralste Komponente in meinem Unternehmen
-			\item usw.
-		\end{itemize}
-	\end{itemize}
 \end{itemize}
-
-Fragen:
-\begin{itemize}
-	\item Muss ich erklären was ein Graph ist und wie er funktioniert?
-	\item Wie kann ich \textbackslash autocite die fußnoten reusen
-\end{itemize}
-
-\chapter{Einleitung}
 
 % CHAPTER: Microservice - Observability - Governance
 \input{chapters/microservice_observability_gouvernance.tex}
@@ -113,32 +78,6 @@ Auch und vor allem bei Fehlern in einer Software als Kernbestandteil eines Unter
 
 An dieser Stelle, einer Schnittstelle zwischen Governance und Observability gilt es so wenig Zeit wie möglich zu verschwenden, um mehr Zeit bei der eigentlichen Fehlerbehebung zur Verfügung zu haben. Es sollte also innerhalb eines Unternehmens eine Möglichkeit geben diese Informationen schnell aufzufinden. Im folgenden werdene einige Anforderungen herausgestellt, welches ein Tools haben muss, um in diesem Schnittstellenbereich einen positiven Einfluss auf die Fehlerbehebung zu haben.
 
-\section{Anforderungen an das Konzept}\label{chap:Anforderungen}
-
-Ein Tool, das sich in diese Lücke einfügt benötigt sowohl Komponenten aus dem eher der Governance zuzuschreibenden Bereich, als auch Elemente aus der Observability.
-
-\begin{enumerate}
-
-\item \textbf{\enquote{Zeit ist Geld}:}\\
-Im vorherigen Kapitel wurde diese Redensart bereits genutzt, um einen wichtige Anforderung zu verdeutlichen. Die Geschwindigkeit, in der ein Fehler innerhalb von Software identifiziert und behoben werden kann ist maßgeblich entscheidend für die Auswirkungen und die Tragweite des Fehlers. Die Auswirkungen sind nicht immer nur finazieller Natur. Auch im Falle von Sicherheitslücken in einem System gilt es den Ursprung eines Angriffs schnellstmöglich identifizieren zu können, um auch hier den Schaden möglichst gering zu halten. Wird also ein Tool entwickelt, dass in einem solchen Fall zur Anwendungen kommt muss es dem Endnutzer eine einfache, schnelle Möglichkeit bieten, die Ursache eines Fehlers unter hunderten möglichen Services zu finden. \\
-Das Finden des Services leitet auch direkt zum nächsten elementaren Bestandteil eines solchen Tools über.
-
-\item \textbf{Bereitstellen von Informationen - nicht nur generieren von Daten:}\\
-Ein solches Tool hat auch die Aufgabe, generierte Daten, seien es spezielle, extra gesammelte, oder bereits vorhande durch andere Tools zur Verfügung gestellte Daten so aufzubereiten, dass nutzbare Informationen daraus entstehen. Diese vorhandenen Informationen müssen fundiert und verlässlich sein, sodass auch unter Zeitdruck eine richtige Entscheidung für das weitere vorgehen getroffen werden kann. Hierbei kommt es nicht nur darauf an, Informationen für \textit{aktuelle} Entscheidungen bereitzustellen, sondern auch, aus vorhandenen Daten und Informationen vorhersagen generieren zu können, um im Fehlerfall nicht erst auf die Interaktion eines Endnutzers warten zu müssen, der einen Fehler identifizieren will, sondern um direkt proaktiv auf einen Nutzer zuzugehen mit der Information, dass ein Fehler vorleigt und wo die wahrscheinliche Ursache dafür liegt. Dazu können Ideen, aus der \textbf{Predictive Maintance} oder der \textbf{Anomaly Detection} genutzt werden.
-
-\item \textbf{Einhaltung von Standards:}\\
-Um die für diese Anforderungen notwendigen Informationen generieren zu können sind Rohdaten notwendig. Diese Rohdaten können, wie bereits erwähnt eigens für dieses Tool generiert werden, oder es können Daten, die von anderen Tools generiert werden verarbeitet werden. Damit dies möglich ist, muss klar sein, in welche Format die Daten aus \enquote{fremden} Tools vorhanden sind. Dies kann unter Umständen von Anbieter zu Anbieter unterschiedlich sein. Deshalb sollte ein neu entwickeltes Tools, um Kompatibilität mit anderen Tools zu erhalten, offenen und weit verarbeiten Standards folgen. Dies ermöglicht nicht nur ein erhöhtes Anwendungspotenzial, sonder erleichtert auch die Arbeit in der Entwicklung, da nur wenige Schnittstellen bereitgestellt werden müssen und eine hohe Anzahl an möglichen Kombinationen möglich ist.
-
-\item \textbf{Kaum manueller Aufwand zur Integration und Wartung:}\\
-Ein solches Tool wird mit hoher Wahrscheinlichkeit aus mehreren Komponenten bestehen. Eine Komponente wird als Zentrale fungieren, um Daten jeglichen Ursprungs entgegenzunehmen und auszuwerten. Eine andere Komponente kann beispielsweise in einem einzelnen Service verarbeitet werden, um Daten zu generieren. Bei der Einführung eines solchen Tools sollte es mit möglichst wenig manuellem Aufwand möglich sein, den vollen Funktionsumfang zu nutzen. Des weiteren sollte auch im laufenden Betrieb keine bis kaum manuelle Wartung nötig sein. Denn je komplexer die Integration eines solchen Tools ist, desto mehr Fehler können nur durch die Einführung oder Wartung injeziert werden. Die Fehlerquelle Mensch sollte möglichst elimiert werden können.
-
-\item \textbf{dezentrale Governance:}\\
-Ein neues Tool sollte die Grundelgende Dezentralität einer Microservicearchitektur unterstützen. Es muss sichergestellt werden, dass Zusammenhänge einfach und klar visualisiert werden können, damit Nutzer auch hier einen Mehrwert erzielen können.
-
-\end{enumerate}
-
-Diese Anforderungen stellen wichtige Elemente dar, um den Nutzen eines solchen Tools evaluieren zu können. Bevor nun das eigentliche Konzept erläutert werden, wird überprüft, inwiefern eine Lösung mit bereits bestehenden Tools konstruiert werden kann. Dazu werden die oben definierten Kriterien genutzt, um einen Vergleich durchführen zu können. Dieser Vergleich wird mithilfe einer \marginpar{Heißt das BalancedScoreCard} XX durchgeführt.
-
 % \section{Verschiedene Ansätze zum lösen von Governance und Observability}
 % \subsection{Ansätze verschiedener Unternehmen}
 % \begin{itemize}
@@ -149,7 +88,7 @@ Diese Anforderungen stellen wichtige Elemente dar, um den Nutzen eines solchen T
 
 % \section{Auf Basis der kriterien hergeleiteter eigener Ansatz mithilfe eines MicroserviceGraphen}
 
-% Innerhalb der Softwareentwicklung stellen sich die oben beschriebenen Probleme oftmals in ähnlicher Form dar. Ein praktisches Beispiel kommt aus dem Bereich der Webentiwcklung, in welchem Bundler ein ähnliches Problem zu bekämpfen haben. Diese besitzen zur Aufgabe Code, welcher in verschiedenen Dateien verteilt ist so zusammenzuführen, das später eine einzige syntaktisch korrete und ausführbare Datei vorliegt. Dabei muss allerdings bedacht werden, dass verschiedene Dateien unterschiedliche Codesegmente aus anderen Dateien importieren können und wiederum eigene Funktionen oder Variablen exportieren können. Dabei zählt es zu den Aufgaben eines Bundlers sicherzustellen, dass ein für die Programmiersprace valider Kontrollflow entsteht. Um dieses Problem zu lösen nutzen Bundler die Möglichkeit, einen Dependency-Graphen auf Basis der Imports und Exports aufzustellen. Dieser wird dann genutzt, um anhand des Startpunktes des Graphen die Zusammenführung der Dateien zu beginnen. Dabei müssen zusätzlich noch weitere Problem gelöst werden, da innerhaln eines Graphen auch circuläre Abhängigkeiten entstehen können, welche aufgelöst werden müssen. Ein Beispiel einer Zirkulären Abhängigkeit kann der \autoref{fig:GraphViz} entnommen werden.
+% Innerhalb der Softwareentwicklung stellen sich die oben beschriebenen Probleme oftmals in ähnlicher Form dar. Ein praktisches Beispiel kommt aus dem Bereich der Webentiwcklung, in welchem Bundler ein ähnliches Problem zu bekämpfen haben. Diese besitzen zur Aufgabe Code, welcher in verschiedenen Dateien verteilt ist so zusammenzuführen, das später eine einzige syntaktisch korrete und ausführbare Datei vorliegt. Dabei muss allerdings bedacht werden, dass verschiedene Dateien unterschiedliche Codesegmente aus anderen Dateien importieren können und wiederum eigene Funktionen oder Variablen exportieren können. Dabei zählt es zu den Aufgaben eines Bundlers sicherzustellen, dass ein für die Programmiersprache valider Kontrollflow entsteht. Um dieses Problem zu lösen nutzen Bundler die Möglichkeit, einen Dependency-Graphen auf Basis der Imports und Exports aufzustellen. Dieser wird dann genutzt, um anhand des Startpunktes des Graphen die Zusammenführung der Dateien zu beginnen. Dabei müssen zusätzlich noch weitere Problem gelöst werden, da innerhaln eines Graphen auch circuläre Abhängigkeiten entstehen können, welche aufgelöst werden müssen. Ein Beispiel einer Zirkulären Abhängigkeit kann der \autoref{fig:GraphViz} entnommen werden.
 
 % \begin{itemize}
 % 	\item Man es während CI/CD Stuff machen. Auch part von Microservices.
@@ -207,7 +146,31 @@ Man erkennt also bereits jetzt, dass rein mit dem mathematischen Modell eines Gr
 
 Mithilfe der Idee einer Flussfunktion in einem Graphen können die Kanten und die Beziehungen zwischen den einzelnen Services genauer dargestellt werden. Die Gewichtung der Kanten kann eine Repräsentation der Intensität der Nutzung dieser Kante darstellen.
 
-Die mathematische Idee eines Graphen oder einem daraus resultierenden Netzwerk können gut
+Dieses mathematische Model beschreibt das zu lösende Problem bereis sehr gut. Deshalb ist es sinnvoll als Datenstruktur zur Abbildung der Daten einen Graphen zu wählen. Graphen können auf technischer Ebene auf verschiedenste Weise implementiert werden. Die Entscheidung welcher Implementierung am sinnvollsten ist, soll aber im Rahmen dieser Arbeit nicht getroffen werden. Einer der populärsten Datenbanken im Bereich der Graphdatenbanken stellt Neo4J dar. Diese Datenbank folgt dem Prinzip der \enquote{index-free adjencency}, was soviel bedeutet, wie dass benachbarte Knoten auch nebeneinander persistiert werden, sodass bei einem Lesevorgang auf das kostpieliege Auswerten von Indices verzichtet werden kann. So können auch große Graphen von einer sehr schnellen Lesezeit profitieren. Gleichzeitig bietet kann dieses \ac{DBMS} mithilfe der populären Abfragesprache \texttt{CYPHER} genutzt werden.
+
+\section{Bewertung einer alternativen Methode}
+
+Im folgenden Abschnitt wird eine Methode vorgestellt, welche versucht das gleiche Problem zu lösen, wie das in der Arbeit präsentierte Konzept. Dabei wird versucht verschiedene Komponenten der Firma Elastic zu kombinieren, um eine Lösung zu konstruieren. Elastic ist unter anderem bekannt durch das Produkt ElasticSearch, welches ein dokumentenbasiertes \ac{DBMS} ist.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\linewidth]{img/statista_db.png}
+	\caption{Stack Overflow. "Most wanted database skills among software developers worldwide as of early 2020." Chart. February 15, 2020. Statista. Accessed August 18, 2020. \url{https://www.statista.com/statistics/793854/worldwide-developer-survey-most-wanted-database/}}
+\end{figure}
+
+ElasticSearch erreicht eine sehr gute Suchperformance durch das verwenden von Indizes und einer guten Tokenisation der indizierten Daten. Zusätzlich ist ElasticSearch so aufgebaut, dass es einfach innerhalb eines Clusters verwendet werden kann. Die in einem Cluster vorhandenen Nodes können auf verscheidenste Weisen konfiguriert werden. Innerhalb von ElasticSearch gibt es auch die Möglichkeit \ac{ML} Funktionen zu verwenden. Diese \ac{ML} Funktionen sind die Grundlage für das Konzept, welches das Problem lösen könnte. Dazu werden, zusätzlich zu \ac{ML}-Nodes noch andere Produkte der Firma Elastic verwendet.
+
+Ein weiteres Produkt nennt sich \ac{APM}, welches die Möglichkeit hat sowohl anwedungsspezifische Daten, als auch hardwarespezifische (oder containerspezifische) Metriken zu sammeln und direkt in einen entsprechenden ElasticSearch-Index zu speichern. Für das \ac{APM} gibt es Integrationen für alle wichtigen Programmiersprachen\footnote{TODO: Quelle zur Dokumentation}. Diese Software liefert wichtige Informationen über den aktuellen Zustand eines Services und bietet auch gleichzeitig eine zentralisierte Sammelstellen für diese Metriken. 
+
+Dies erfüllt die Punkte vier und fünf der Anforderung \vref{chap:Anforderungen}. Das initiale Aufsetzen der Infrastruktur benötigt allerdings durchaus produktspezifisches Know-How. Danach ist es aber ein sehr einfacher Prozess neue Services anzuschließen, da dies rein auf Serviceebene, also von den implementierenden Teams erledigt werden kann und unterstützt somit den dezentralen Ansatz einer Microservicearchitektur. Es fehlt allerdings noch die Auswertung und Aufbereitung der durch \ac{APM} gesammelten Daten. Dazu kann das Visualisierungstool von Elastic, Kibana, verwendet werden. \\
+Kibana nutzt die vorhandenen Indizes in einem ElasticSearch Cluster, um verschiedenste Operationen, meistens visualisierender Art, durchzuführen. Dort können auch eigene Visulaisierungen konfiguriert werden, welche dem Endnutzer ermöglichen, eine für ihn optimale Informationslandschaft zu gestalten. Dies erfüllt das zweite definierte Kriterium aus \vref{chap:Anforderungen}, da es die durch \ac{APM} gesammelten Daten aufbereitet zu wertvollen Informationen, welche Hinweise geben auf den internen Zustand eines Services.
+
+Die Kombination aus \ac{APM} und Kibana stellen also Tools dar, die einen Fokus auf die Observability haben. Das eigentliche Problem beinhaltet aber auch, dass ein Nutzer sehr schnell Wissen muss, um welchen Fehler es sich handelt und wie groß die Auswirkungen davon sind. Zusätzlich ist es wichtig, bereits während der Entwicklung eines Services zu wissen, in welcher Umgebung sich der Service befindet. Um diese Governanceaspekte in diesen Lösungsvorschalg zu integrieren kommen die bereits angesprochenen \ac{ML} Nodes ins Spiel. Diese bieten die Möglichkeit eine Analyse der Daten in einem Index durchzuführen. Ab dann kann festgestellt werden, ob ein System \enquote{normal} operiert oder nicht. Sollten nun Metrken aus \ac{APM} in dem Index gespeichert werden, welche Hinweise auf einen Fehler enthalten, so wird die Analyse dies erkennen und besteht die Möglichkeit des schnellen entdeckens des Fehlers. Gleichzeitig beinhaltet die Nutzung der \ac{ML} Funktionalität auch eineige Schwierigkeiten. \\
+So ist es z.B. während der Analyse schwer zu unterscheiden, ob eine erkannte Anomlie wirklich ein Fehler ist, oder einfach nur ein neuer Service, der hinzugefügt wurde.
+
+\section{Konzept unter Nutzung einer Graphdatenbank}
+
+\section{Bewertung und Gegenüberstellung der Methoden}
 
 \begin{itemize}
 	\item Eine Idee von Elastic vorstellen $\Rightarrow$ APM zusammen mit ML-Nodes können zur Anomaly-Detection und Predicitve Maintance genutzt werden. Lösen die das eigentliche Problem, wenn ja in welchem Ausmaß
