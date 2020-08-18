@@ -82,7 +82,7 @@ An dieser Stelle, einer Schnittstelle zwischen Governance und Observability gilt
 % \subsection{Ansätze verschiedener Unternehmen}
 % \begin{itemize}
 % 	\item Elastic
-% 	\item Neo4J
+% 	\item Neo4j
 % \end{itemize}
 % Microservice Governance und Themen der Observability sind bekannte Probleme und wurden schon oft von verschiedenen Organsiationen gelöst. Bewegt man sich im OpenSource bereich so findet sich mit der \ac{CNCF} ein Zusammenschluss, welcher versucht offene Standards für viele elementare Bereiche der Observability und der Governance zu erreichen.
 
@@ -99,7 +99,7 @@ An dieser Stelle, einer Schnittstelle zwischen Governance und Observability gilt
 % \begin{figure}[h]
 % 	\centering
 % 	\makebox[\textwidth]{\includegraphics[width=\linewidth]{img/dependency-graph.png}}
-% 	\caption[Dependency Graph]{Visulaisierung eines Dependency-Graphen mit zirkulären Abhängigkeiten. Quelle: \cite[]{GraphViz}}
+% 	\caption[Dependency Graph]{Visualisierung eines Dependency-Graphen mit zirkulären Abhängigkeiten. Quelle: \cite[]{GraphViz}}
 % 	\label{fig:GraphViz}
 % \end{figure}
 %  All diese Elemente dienen als Grundlage zu der Idee, dass zur Risikoeinschätzung der Auswirkungen eines Fehelerfalls innerhalb einer Microservicearchitektur ein ähnlicher Dependency-Graph eine große Hilfe darstellen würde. Baut man den Graphen so auf, wie in obiger Analogie beschrieben, so erhält man einen Graphen, welcher Anzeigt ob und wie weit bestimmte Microservices miteinenander kommunizieren oder sogar voneinander Abhängigkeit sind. Dies beitet die Möglichkeit wertvolle Einblicke in das \textit{makroskopische} Zusammenspiel der einzelnen Komponenten einer Architektur zu erhalten. Ein Softwarearchitekt hat nun die Möglichkeit bei der Entscheidung über die Einführung eines neuen Service Informationen aus ebendiesem Graphen zu nutzen, um festzustellen ob eine zu Starke Abhängikteit zwischen Services vorhanden ist, oder ob es bei der Entwicklung bereits bestehende Abhängigkeiten gibt.
@@ -136,7 +136,7 @@ Eine Unterkategorie bei den gerichteten Graphen sind sowohl zyklische, als auch 
 		\item der Menge $A(G)=\{a,b \mid \text{a benötigt Informationen aus b}\}$
 	\end{itemize}
 	Der Graph beinhaltet also Informationen über einen Service, als auch über seine Verbindungen mit anderen Services. Da es ein gerichteter Graph ist gilt für $$(a,b), (b,a) \in A(G),\text{ dass }(a,b) \neq (b,a),$$ da es sich bei den Elementen von $A(G)$ um geordnete Tupel handelt. Diese Tatsache spiegelt sich auch in der Relatiät wieder da die Abhängigkeit eines Services $a$ von einem Service $b$ nicht dieselbe Anfrage wiederspiegelt, die Service $b$ von Service $a$ hat.
-\end{example}
+\end{example}\label{exp:microserviceGraph}
 
 Man erkennt also bereits jetzt, dass rein mit dem mathematischen Modell eines Graphen bereits viele realen Aspekte übereinstimmen, was es als potenzielles Datenmodell qualifiziert. Die Datenstruktur eines Graphen hat zusätzlich noch die Möglichkeit Informationen sowohl an den Knoten, als auch an den Kanten zu speichern \footnote{TODO: Quelle}. Zusätzlich könnte eine weitere Idee aus der \textbf{Graphentheorie} eine nützliche Ergänzung zu der bisherigen Idee darstellen.
 
@@ -146,7 +146,7 @@ Man erkennt also bereits jetzt, dass rein mit dem mathematischen Modell eines Gr
 
 Mithilfe der Idee einer Flussfunktion in einem Graphen können die Kanten und die Beziehungen zwischen den einzelnen Services genauer dargestellt werden. Die Gewichtung der Kanten kann eine Repräsentation der Intensität der Nutzung dieser Kante darstellen.
 
-Dieses mathematische Model beschreibt das zu lösende Problem bereis sehr gut. Deshalb ist es sinnvoll als Datenstruktur zur Abbildung der Daten einen Graphen zu wählen. Graphen können auf technischer Ebene auf verschiedenste Weise implementiert werden. Die Entscheidung welcher Implementierung am sinnvollsten ist, soll aber im Rahmen dieser Arbeit nicht getroffen werden. Einer der populärsten Datenbanken im Bereich der Graphdatenbanken stellt Neo4J dar. Diese Datenbank folgt dem Prinzip der \enquote{index-free adjencency}, was soviel bedeutet, wie dass benachbarte Knoten auch nebeneinander persistiert werden, sodass bei einem Lesevorgang auf das kostpieliege Auswerten von Indices verzichtet werden kann. So können auch große Graphen von einer sehr schnellen Lesezeit profitieren. Gleichzeitig bietet kann dieses \ac{DBMS} mithilfe der populären Abfragesprache \texttt{CYPHER} genutzt werden.
+Dieses mathematische Model beschreibt das zu lösende Problem bereis sehr gut. Deshalb ist es sinnvoll als Datenstruktur zur Abbildung der Daten einen Graphen zu wählen. Graphen können auf technischer Ebene auf verschiedenste Weise implementiert werden. Die Entscheidung welcher Implementierung am sinnvollsten ist, soll aber im Rahmen dieser Arbeit nicht getroffen werden. Einer der populärsten Datenbanken im Bereich der Graphdatenbanken stellt Neo4j dar. Diese Datenbank folgt dem Prinzip der \enquote{index-free adjencency}, was soviel bedeutet, wie dass benachbarte Knoten auch nebeneinander persistiert werden, sodass bei einem Lesevorgang auf das kostpieliege Auswerten von Indices verzichtet werden kann. So können auch große Graphen von einer sehr schnellen Lesezeit profitieren. Gleichzeitig bietet kann dieses \ac{DBMS} mithilfe der populären Abfragesprache \texttt{CYPHER} genutzt werden.
 
 \section{Bewertung einer alternativen Methode}
 
@@ -160,21 +160,62 @@ Im folgenden Abschnitt wird eine Methode vorgestellt, welche versucht das gleich
 
 ElasticSearch erreicht eine sehr gute Suchperformance durch das verwenden von Indizes und einer guten Tokenisation der indizierten Daten. Zusätzlich ist ElasticSearch so aufgebaut, dass es einfach innerhalb eines Clusters verwendet werden kann. Die in einem Cluster vorhandenen Nodes können auf verscheidenste Weisen konfiguriert werden. Innerhalb von ElasticSearch gibt es auch die Möglichkeit \ac{ML} Funktionen zu verwenden. Diese \ac{ML} Funktionen sind die Grundlage für das Konzept, welches das Problem lösen könnte. Dazu werden, zusätzlich zu \ac{ML}-Nodes noch andere Produkte der Firma Elastic verwendet.
 
-Ein weiteres Produkt nennt sich \ac{APM}, welches die Möglichkeit hat sowohl anwedungsspezifische Daten, als auch hardwarespezifische (oder containerspezifische) Metriken zu sammeln und direkt in einen entsprechenden ElasticSearch-Index zu speichern. Für das \ac{APM} gibt es Integrationen für alle wichtigen Programmiersprachen\footnote{TODO: Quelle zur Dokumentation}. Diese Software liefert wichtige Informationen über den aktuellen Zustand eines Services und bietet auch gleichzeitig eine zentralisierte Sammelstellen für diese Metriken. 
+Ein weiteres Produkt nennt sich \ac{APM}\footnote{\url{https://www.elastic.co/de/apm}}, welches die Möglichkeit hat sowohl anwedungsspezifische Daten, als auch hardwarespezifische (oder containerspezifische) Metriken zu sammeln und direkt in einen entsprechenden ElasticSearch-Index zu speichern. Für das \ac{APM} gibt es Integrationen für alle wichtigen Programmiersprachen\footnote{\url{https://www.elastic.co/guide/en/apm/get-started/current/index.html}}. Diese Software liefert wichtige Informationen über den aktuellen Zustand eines Services und bietet auch gleichzeitig eine zentralisierte Sammelstellen für diese Metriken. 
 
-Dies erfüllt die Punkte vier und fünf der Anforderung \vref{chap:Anforderungen}. Das initiale Aufsetzen der Infrastruktur benötigt allerdings durchaus produktspezifisches Know-How. Danach ist es aber ein sehr einfacher Prozess neue Services anzuschließen, da dies rein auf Serviceebene, also von den implementierenden Teams erledigt werden kann und unterstützt somit den dezentralen Ansatz einer Microservicearchitektur. Es fehlt allerdings noch die Auswertung und Aufbereitung der durch \ac{APM} gesammelten Daten. Dazu kann das Visualisierungstool von Elastic, Kibana, verwendet werden. \\
-Kibana nutzt die vorhandenen Indizes in einem ElasticSearch Cluster, um verschiedenste Operationen, meistens visualisierender Art, durchzuführen. Dort können auch eigene Visulaisierungen konfiguriert werden, welche dem Endnutzer ermöglichen, eine für ihn optimale Informationslandschaft zu gestalten. Dies erfüllt das zweite definierte Kriterium aus \vref{chap:Anforderungen}, da es die durch \ac{APM} gesammelten Daten aufbereitet zu wertvollen Informationen, welche Hinweise geben auf den internen Zustand eines Services.
+Dies erfüllt die Punkte vier und fünf der Anforderung \vref{chap:Anforderungen}. Das initiale Aufsetzen der Infrastruktur benötigt allerdings durchaus produktspezifisches Know-How. Danach ist es aber ein sehr einfacher Prozess neue Services anzuschließen, da dies rein auf Serviceebene, also von den implementierenden Teams erledigt werden kann und unterstützt somit den dezentralen Ansatz einer Microservicearchitektur. Es fehlt allerdings noch die Auswertung und Aufbereitung der durch \ac{APM} gesammelten Daten. Dazu kann das Visualisierungstool von Elastic, \textbf{Kibana}\footnote{\url{https://www.elastic.co/de/kibana}}, verwendet werden. \\
+Kibana nutzt die vorhandenen Indizes in einem ElasticSearch Cluster, um verschiedenste Operationen, meistens visualisierender Art, durchzuführen. Dort können auch eigene Visualisierungen konfiguriert werden, welche dem Endnutzer ermöglichen, eine für ihn optimale Informationslandschaft zu gestalten. Dies erfüllt das zweite definierte Kriterium aus \vref{chap:Anforderungen}, da es die durch \ac{APM} gesammelten Daten aufbereitet zu wertvollen Informationen, welche Hinweise geben auf den internen Zustand eines Services.
 
-Die Kombination aus \ac{APM} und Kibana stellen also Tools dar, die einen Fokus auf die Observability haben. Das eigentliche Problem beinhaltet aber auch, dass ein Nutzer sehr schnell Wissen muss, um welchen Fehler es sich handelt und wie groß die Auswirkungen davon sind. Zusätzlich ist es wichtig, bereits während der Entwicklung eines Services zu wissen, in welcher Umgebung sich der Service befindet. Um diese Governanceaspekte in diesen Lösungsvorschalg zu integrieren kommen die bereits angesprochenen \ac{ML} Nodes ins Spiel. Diese bieten die Möglichkeit eine Analyse der Daten in einem Index durchzuführen. Ab dann kann festgestellt werden, ob ein System \enquote{normal} operiert oder nicht. Sollten nun Metrken aus \ac{APM} in dem Index gespeichert werden, welche Hinweise auf einen Fehler enthalten, so wird die Analyse dies erkennen und besteht die Möglichkeit des schnellen entdeckens des Fehlers. Gleichzeitig beinhaltet die Nutzung der \ac{ML} Funktionalität auch eineige Schwierigkeiten. \\
-So ist es z.B. während der Analyse schwer zu unterscheiden, ob eine erkannte Anomlie wirklich ein Fehler ist, oder einfach nur ein neuer Service, der hinzugefügt wurde.
+Die Kombination aus \ac{APM} und Kibana stellen also Tools dar, die einen Fokus auf die Observability haben. Das eigentliche Problem beinhaltet aber auch, dass ein Nutzer sehr schnell Wissen muss, um welchen Fehler es sich handelt und wie groß die Auswirkungen davon sind. Zusätzlich ist es wichtig, bereits während der Entwicklung eines Services zu wissen, in welcher Umgebung sich der Service befindet. Um diese Governanceaspekte in diesen Lösungsvorschalg zu integrieren kommen die bereits angesprochenen \ac{ML} Nodes ins Spiel. Diese bieten die Möglichkeit eine Analyse der Daten in einem Index durchzuführen. Ab dann kann festgestellt werden, ob ein System \enquote{normal} operiert oder nicht. Sollten nun Metrken aus \ac{APM} in dem Index gespeichert werden, welche Hinweise auf einen Fehler enthalten, so wird die Analyse dies erkennen und besteht die Möglichkeit des schnellen entdeckens des Fehlers. Gleichzeitig beinhaltet die Nutzung der \ac{ML} Funktionalität auch eineige Schwierigkeiten.
+
+So ist es z.B. während der Analyse schwer zu unterscheiden, ob eine erkannte Anomlie wirklich ein Fehler ist, oder einfach nur ein neuer Service, der hinzugefügt wurde. Es ist auch nur schwer möglich die Metriken unterscheidlicher Services in einer einzelnen \ac{ML} Node auszuwerten, da durch unterschiedliche Hardwaredaten der verschiedene Services ein sehr breites Spektrum als \enquote{normal} angsehen wird. Es gilt also hierfür eine Lösung zu finden, welche nicht beinhaltet, dass für jeden neuen Service eine neue \ac{ML} Pipeline angelegt werden muss.
+
+Die Idee dieses bestehenden Tools zu verwenden, um das Problem zu lösen ist prinzipiell nicht von der Hand zu weisen, da auch einige wesentliche Anforderungen aus \vref{chap:Anforderungen} erfüllt werden. Allerdings bringt es auch Schwierigkeiten mit, die es vor der Einführung und dauerhaften Nutzung dieser Tools zu lösen gilt.
 
 \section{Konzept unter Nutzung einer Graphdatenbank}
+
+Im ersten Abschnitt dieses Kapitles wurden bereits Grundlage im Bezug auf Graphen und deren Eingeschaften erläutert. Die Idee Graphen zu verwenden, um Abhängigkeiten und Verbindungen zwischen Elementen darzustellen ist nicht neu. Bereits \citeyear{Metayer1998} erläuterte \citeauthor{Metayer1998} in \citetitle{Metayer1998} einen Ansatz, wie man mithilfe formaler Sprachen die Softwarearchitektur in einem Graphen abbilden kann \autocite{Metayer1998}.
+
+\begin{example}[Abhängigkeitsgraphen]
+	Abhängigkeitsgraphen werden auch in Toolings für verschiedene Programmiersprachen verwendet. Ein Beispiel ist JavaScript. Diese ermöglichen es Dateien, verschiedenen Formats miteinenander zu kombinieren und in einer Datei, dem Bundle, zusammenzuführen. Dabei ist es wichtig, dass alle Dateien in der richtigen Reihenfolge in das Bundle integriert werden, um am Ende ein lauffähiges Programm zu erhalten. Um zu wissen, welche Dateien in welcher Reihenfolge eingefügt werden müssen, wird ein Abhängigkeitsgraph erstellt, an dem abgelesen werden kann, welche Datei benötigt wird, um eine andere valide Datei zu erhalten.
+\end{example}
+
+Das Konzept eines Abhängigkeitsgraphen ist auch die Grundlage für die Idee, die Abhängigkeiten zwischen Services über einen Graphen darzustellen. Für die Realisierung des Konzeptes kann eine beliebige Graphdatenbank gewählt werden. Dabei sollte aber darauf geachtet werden, dass es sich um eine \enquote{native} Graphdatenbank handelt. Das bedeutet, dass der primäre Anwedungsfall des \ac{DBMS} die Darstellung und Speicherung der Daten in einem Graphen ist. Andere \ac{DBMS}, wie z.B. Elastic oder MongoDb bieten auch die Möglichkeit Daten mithilfe von Graphen darzustellen und zu speichern. In diesen Datenbanken sind die Graphen nur unter zuhilfenahme einer großen Anzahl an Indizes realisierbar \autocite{JoyChao2016}. Diese \enquote{nicht-nativen} Graphen haben oftmals eine deutlich schlechtere Performance als ein \ac{DBMS}, welches einen nativen Graphen realisiert.\\
+Für den oben beschriebenen Anwendungsfall sollte also ein \ac{DBMS} gewählt werden, welche eine native Implementierung eines Graphen besitzt.
+
+\subsection{Das Konzept eines Microservicegraphen}
+
+Wie bereits in \vref{exp:microserviceGraph} beschrieben, kann die Menge der Knoten in einem Graphen mit den Microservices innerhalb eines Unternehmens gleichgesetzt werden. Diese Knoten können innerhalb einer Graphdatenbank noch zusätzliche Eigenschaften erhalten. Im folgenden wird exemplarisch \textbf{Neo4j}\footnote{\url{https://neo4j.com/}} als konkretes \ac{DBMS} verwendet. Allerdings können alle spezifischen Konzepte auch auf andere Graphdatenbanken angewendet werden.
+
+Die grundlegende Idee soll anhand eines sehr einfachen Graphen beschrieben werden. Dieser Graph $G$ ist definiert mit:
+\begin{itemize}
+	\item $V = \{\text{Service A, Service B}\}$ und
+	\item $A = \{(\text{Service A},\text{Service B}), (\text{Service B}, \text{Service A})\}$
+\end{itemize}
+
+Diese Defition führt zu folgenden Graphen:
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.65\linewidth]{img/service_dependencies.png}
+	\caption[Abbildung eines simplen Abhängigkeitsgraphen]{Visualisierung des Graphen\\Quelle: Eigen}
+\end{figure}
+
+Da es sich um einen gerichteten Graphen mit geoordneten Tupeln als Elemente der Kantenmenge handelt, kann die Richtung der Abhängigkeit erkannt werden. Zu lesen ist es folgendermaßen:
+
+\begin{center}
+	Service A benötigt den \texttt{/foo}-Endpunkt von Service B\\
+	Service B benötigt den \texttt{/bar}-Endpunkt von Service A
+\end{center}
+
+In der methematischen Darstellung alleine ist allerdings noch keine Information bzgl. der Abhängigkeit zu erknennen. In einem \ac{DBMS} wie Neo4j ist dies allerdings möglich, da es sich bei der vorhandenen Implementierung um einen sogenannten \textbf{property graph} handelt. Dieser Graph kann Schlüssel-Wert Paare sowohl an den Knoten (Nodes), als auch an den Kanten (Relationship) speichern \footnote{\url{https://neo4j.com/developer/graph-database\#property-graph}}.
+
+\subsection{Mögliche Realiserungen des Konzepts}
+
 
 \section{Bewertung und Gegenüberstellung der Methoden}
 
 \begin{itemize}
-	\item Eine Idee von Elastic vorstellen $\Rightarrow$ APM zusammen mit ML-Nodes können zur Anomaly-Detection und Predicitve Maintance genutzt werden. Lösen die das eigentliche Problem, wenn ja in welchem Ausmaß
-	\item Kurze Einführung in Graphdatenbanken, im speziellen Neo4J. Wieso passen die so gut? referenzieren auf Bilder und \enquote{Abhängigkeiten} Wie kann damit eine Lösung konstruiert werden?
+	\item Kurze Einführung in Graphdatenbanken, im speziellen Neo4j. Wieso passen die so gut? referenzieren auf Bilder und \enquote{Abhängigkeiten} Wie kann damit eine Lösung konstruiert werden?
 	\begin{itemize}
 		\item Statischer Ansatz $\Rightarrow$ von den Entwicklern definierte Abhängigkeiten werden in der Service-Definition angegeben. Der Graph kann aus diesen SD's erstellt werden. Hier gibt es Probleme: Manuelle Veranwtortlichkeit widerspricht eigentlicher Idee von Risikoeinschätzung, da ein neuer Fehler Mensch eingebaut wird.
 		\item Automatischer Nutzungsbasierter, somit dynamischer Aufbau des Graphen. Prinzip ähnlich wie bei Prometheus (populäres Tool zum sammeln von Metriken). Konzept ähnlich wie Distributed Tracing. Dort werden alle Traces mit ihren Spans zusammengefasst und zentral ausgewertet. Kombination aus dieser Idee mit Prometheus-Ansatz sieht dann folgendermaßen aus:
