@@ -207,10 +207,20 @@ Da es sich um einen gerichteten Graphen mit geoordneten Tupeln als Elemente der 
 	Service B benötigt den \texttt{/bar}-Endpunkt von Service A
 \end{center}
 
-In der methematischen Darstellung alleine ist allerdings noch keine Information bzgl. der Abhängigkeit zu erknennen. In einem \ac{DBMS} wie Neo4j ist dies allerdings möglich, da es sich bei der vorhandenen Implementierung um einen sogenannten \textbf{property graph} handelt. Dieser Graph kann Schlüssel-Wert Paare sowohl an den Knoten (Nodes), als auch an den Kanten (Relationship) speichern \footnote{\url{https://neo4j.com/developer/graph-database\#property-graph}}.
+In der mathematischen Darstellung alleine ist allerdings noch keine Information bzgl. der Abhängigkeit zu erknennen. In einem \ac{DBMS} wie Neo4j ist dies allerdings möglich, da es sich bei der vorhandenen Implementierung um einen sogenannten \textbf{property graph} handelt. Dieser Graph kann Schlüssel-Wert Paare sowohl an den Knoten (Nodes), als auch an den Kanten (Relationships) speichern \footnote{\url{https://neo4j.com/developer/graph-database\#property-graph}}.
 
 \subsection{Mögliche Realiserungen des Konzepts}
 
+Nun, da das unterliegende Datenmodell geklärt müssen weitere Aspekte des Konzepts erläutert werden, um die Anforderungen entsprechend zu erfüllen. Dazu werden nun verschiedene technische Möglichkeiten präsentiert, wie ein solches Tool in eine Microservicearchitektur integriert werden kann. Ein er dieser Aspekte ist der Aufbau des Graphs. Es wurde bereits in \vref{exp:microserviceGraph} geklärt, wie das Datenmodell aussehen kann. Nun sollen verschiedene Möglichkeiten vorgeschlagen werden, um den Graphen anhand der in einer Architektur vorhandenen Services und Abhängigkeiten aufzubauen.
+
+\subsubsection*{Statischer Ansatz}
+Wie bereits in der Definition eines Microservice festgehalten, ist es in der Pflicht des dafür zustädnigen Teams parallel zum Service auch eine \textbf{Service Defintion} bereitzustellen. Ein offener Standard zum beschreiben von REST Schnittstellen ist OpenAPI 3.0 \footnote{TODO: Quelle}. Innerhalb dieses Standards gibt es außerdem die Möglichkeit, weitere Metadaten zum beschreiben eines Services zu speichern. Um nun dem Graphen die benötigten Daten bereitzustellen, kann das für einen Service zuständige Team die Abhängigkeiten in ein speziell definiertes Metadatenfeld eintragen. Die zentrale Komponenten die dafür verantwortlicht ist den Graphen aufzubauen könnte dann auf Basis dieser Informationen einen die Architektur repräsenierenden Graphen konstruieren. Diese Methode bringt allerdings einige Probleme mit sich, welche die Nutzung eines solchen Tools erschweren würden:
+
+\begin{enumerate}
+	\item Manuelle Fehler beim eintrager der dependencies und man muss es immer aktualisieren
+	\item Wie trägt man es überhaupt ein? URL's sind auch nicht immer gleicht, identifier? Dann brauch man ein krasses Konzept dafür
+	\item Prozess ist generell langsam und nur mit Aktualisierung der SD kann eine Aktualisierung des Graphen erreicht werden. Das heißt, erst danach ist bekannt was sich verändert, somit wiederspricht es der eigentlichen Idee der Risikominimierung
+\end{enumerate}
 
 \section{Bewertung und Gegenüberstellung der Methoden}
 
