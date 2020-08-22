@@ -36,6 +36,9 @@
 %	Abbildungsverzeichnis
 \listoffigures
 
+%	Listingverzeichnis
+\lstlistoflistings
+
 %	Tabellenverzeichnis
 % \listoftables
 
@@ -103,7 +106,7 @@ Eine Unterkategorie bei den gerichteten Graphen sind sowohl zyklische, als auch 
 
 Man erkennt also bereits jetzt, dass rein mit dem mathematischen Modell eines Graphen bereits viele reale Aspekte übereinstimmen, was es als potenzielles Datenmodell qualifiziert. Die Datenstruktur eines Graphen hat zusätzlich noch die Möglichkeit, Informationen sowohl an den Knoten, als auch an den Kanten zu speichern \footnote{TODO: Quelle}. Zusätzlich könnte eine weitere Idee aus der \textbf{Graphentheorie} eine nützliche Ergänzung zu der bisherigen Idee darstellen.
 
-\begin{definition}[Fluss]
+\begin{definition}[Fluss]\label{def:Fluss}
 	In der Graphentheorie stellt ein Fluss eine Funktion $f: A \rightarrow \mathbb{R_+}$ dar, die jeder Kante $a \in A(G)$ einen nichtnegativen Flusswert $f(a) \in \mathbb{R_+}$ zuweist. Des Weiteren muss folgende Bedingung erfüllt sein, damit es sich bei dieser Funktion um einen Fluss handelt. Dafür muss gelten, dass der Flusswert einer Kante $a \in A(G)$ höchstens so groß ist wie die Kapazität der Kante mit: \footnote{TODO: Quelle, Netzwerk noch erklären} $$\forall a \in A(G): f(a) \leq u(a)$$
 \end{definition}
 
@@ -194,15 +197,64 @@ Diese Methode bringt allerdings einige Probleme mit sich, welche die Nutzung ein
 
 \subsubsection*{2. Dynamischer Ansatz}
 
-Aus den Problemen der statischen Methode lässt sich erkennen, dass viele Prozesse automatisiert ablaufen müssen. Dazu zählen unter anderem:
+Aus den Problemen der statischen Methode lässt sich erkennen, dass viele Prozesse automatisiert ablaufen müssen. Zusätzlich dazu fehlen noch wichtige Bestandteile einer Service-Registry. Dazu zählen unter anderem:
 
 \begin{enumerate}
 	\item die Service-Discovery,
-	\item das automatische Hinzufügen und Aktualisieren in den Graphen und
+	\item das automatische Hinzufügen und Aktualisieren in dem Graphen und
 	\item die Einführung einer Gewichtung, um zu erkennen wie \enquote{stark} eine Abhängigkeit zwischen zwei Services ist.
 \end{enumerate}
 
+Die Lösung für die in Punkt eins und zwei beschriebenen Probleme lässt sich mithilfe einer Prozessautomatisierung erreichen. Dazu wird der vorherige Ansatz des manuellen Eintragens der Serviceinformationen in die Servie-Defintion ersetzt durch die Idee einer automatischen Service-Anmeldung. Mithilfe eines Plugins für die in dem Microservice verwendete Servertechnologie kann während des Startvorgangs eine Anmeldung an der zentralen Komponente der Service-Registry durchgeführt werden. Diese Anmeldung mithilfe des folgenden Ablaufs beschrieben werden:
+
+\begin{figure}[h]
+	\centering
+	
+	\caption{TODO: Protocoll aufmalen}
+\end{figure}
+
+\begin{enumerate}
+	\item Während des Hochfahrens des Services meldet sich der \enquote{Client} bei der zentralen Komponente als Service an. Die zentrale Komponente kann dann dem Service einen Service-Identifier zuweisen, der zur späteren Identifiezierung sowohl in der Registry selbst, als auch bei anderen Tools dienen kann.
+	\item Im nächsten Schritt wird dann von dem Service ein Endpunkt (entweder vordefiniert durch die Registry oder ausgehandelt während des initialen Verbindungsaufbaus) bereitgestellt, der Informationen über die Aktivität seit der letzten Abfrage dieses Endpunktes enthält. Dabei kommt es vor allem darauf an, welche anderen Services angefragt werden. Jeder Service sollte einen eigenen Header mitsenden, der den von der Registry bereitgestellten Identifier beinhaltet. So kann später in der zentralen Komponente der Registry festgestellt werden, welche Services zur Bearbeitung der eigenen Anfrage, Informationen aus anderen Services benötigen.
+	\item Im letzten Schritt wird innerhalb der zentralen Komponenten die Abfrage dieses Endpunktes in regelmäßigen Intervallen verwaltet.
+\end{enumerate}
+
+In einer Client-Bibliothek müssen also nur Funktionen zum Austausch über einen Identifier und Sammeln von Requestinformationen implementiert werden. Dies hat den Vorteil, dass die Client-Bibliotheken sehr klein gehalten werden können und auch nur eine geringe Runtime-Cost einführen, somit sehr wenige Performanceeinbußen mit der Nutzung einer solchen Registry einhergehen.
+
 \subsection{Die zentrale Komponente}
+
+Im folgenden Abschnitt soll nun kurz auf die Funktionalität innerhalb der zentralen Komponente eingegangen werden. Im speziellen wird dabei dargestellt, wie der Graph auf Basis der gesammelten Nutzungsdaten aufgebaut werden kann. Die Methode, wie der Graph erstellt wird soll zunächst mathematisch begründet werden. Danach wird ein Implementierungsvorschlag erläutert.
+
+Dazu wird zunächst die Defintion eines Flussnetzwerks \vref{def:Fluss} wieder aufgegriffen. Ein Flussnetzwerk wird deshalb gewählt, da die Abhängigkeiten zwischen den Services gewichtet werden auf Basis von deren Nutzung. Es müssen also zwei Funktionen bereitgestellt werden, eine Kapazitätsfunktion $c$ und eine Flussfunktion $f$.
+
+Die Abbildung $f: A \rightarrow \mathbb{R_+}$ wird folgendermaßen definiert:
+
+\begin{equation*}
+	f(a) = \sum (\text{Request von } a_1 \text{ nach } a_2) \text{, mit } a = (a_1, a_2) \in A
+\end{equation*}
+
+Mithilfe dieser Funktion kann jeder Kante im Graphen ein postiver ganzzahliger Wert zugewiesen werden. Nun muss noch eine Kapazitätsfunktion $c: V \times V \rightarrow \mathbb{R_+}$ definiert werden, damit ein vollständiges Flussnetzwerk vorliegt. Dafür wird folgendende Methode gewählt:
+
+\begin{equation*}
+	c(v_1,v_2) = \begin{cases}
+		f((v_1,v_2)) \text{, wenn } (v_1,v_2) \in A\\
+		0 \text{ sonst } \\
+	\end{cases}
+\end{equation*}
+
+Das bedeutet also, jede Kante besitzt nun eine Gewichtung. Diese Gewichtung ist abhängig von der tatsächlich registrierten Nutzung der Verbindung zwischen zwei Services. Dieses mathematische Konzept kann nun mithilfe von Neo4j umgesetzt werden. Die hier Werte der Gewichtungsfunktion $f$ werden als Wert an der \textit{Relation} zwischen den entsprechenden \textit{Nodes} gespeichert. Die Gewichtungsfunktion $f$ ist allerdings von der Anzahl der Anfragen zwischen zwei Services abhängig. Diese Anzahl wird von der dezentralen Komponente gesammelt. 
+
+Beispielsweise könnte mithilfe dieser Komponente ein Endpunkt an jedem Service registriert werden, der auf Anfrage eine Antwort in JSON-Format bereitstellt, die folgendermaßen aufgebaut sein könnte:
+
+\begin{lstlisting}[language=json, caption={Antwort über Nutzung anderer Services}]
+{
+	"service-identifier": {
+		"Endpunkt": "Anzahl",
+		// ..
+	},
+	// ...
+}
+\end{lstlisting}
 
 \section{Bewertung und Gegenüberstellung der Methoden}
 
