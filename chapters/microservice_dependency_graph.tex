@@ -147,9 +147,9 @@ In einer Client-Bibliothek müssen also nur Funktionen zum Austausch über einen
 
 \subsection{Die zentrale Komponente}
 
-Im folgenden Abschnitt soll nun kurz auf die Funktionalität innerhalb der zentralen Komponente eingegangen werden. Im speziellen wird dabei dargestellt, wie der Graph auf Basis der gesammelten Nutzungsdaten aufgebaut werden kann. Die Methode, wie der Graph erstellt wird soll zunächst mathematisch begründet werden. Danach wird ein Implementierungsvorschlag erläutert.
+Im folgenden Abschnitt soll nun kurz auf die Funktionalität innerhalb der zentralen Komponente eingegangen werden. Im Speziellen wird dabei dargestellt, wie der Graph auf Basis der gesammelten Nutzungsdaten aufgebaut werden kann. Die Methode, wie der Graph erstellt wird, soll zunächst mathematisch begründet werden. Danach wird ein Implementierungsvorschlag erläutert.
 
-Dazu wird zunächst die Defintion eines Flussnetzwerks \vref{def:Fluss} wieder aufgegriffen. Ein Flussnetzwerk wird deshalb gewählt, da die Abhängigkeiten zwischen den Services gewichtet werden auf Basis von deren Nutzung. Es müssen also zwei Funktionen bereitgestellt werden, eine Kapazitätsfunktion $c$ und eine Flussfunktion $f$.
+Dazu wird zunächst die Defintion eines Flussnetzwerks \vref{def:Fluss} wieder aufgegriffen. Ein Flussnetzwerk wird deshalb gewählt, da die Abhängigkeiten zwischen den Services auf Basis ihrer Nutzung gewichtet werden. Es müssen also zwei Funktionen bereitgestellt werden, eine Kapazitätsfunktion $c$ und eine Flussfunktion $f$.
 
 Die Abbildung $f: A \rightarrow \mathbb{R_+}$ wird folgendermaßen definiert:
 
@@ -166,9 +166,9 @@ Mithilfe dieser Funktion kann jeder Kante im Graphen ein postiver ganzzahliger W
 	\end{cases}
 \end{equation*}
 
-Das bedeutet also, jede Kante besitzt nun eine Gewichtung. Diese Gewichtung ist abhängig von der tatsächlich registrierten Nutzung der Verbindung zwischen zwei Services. Dieses mathematische Konzept kann nun mithilfe von Neo4j umgesetzt werden. Die hier Werte der Gewichtungsfunktion $f$ werden als Wert an der \textit{Relation} zwischen den entsprechenden \textit{Nodes} gespeichert. Die Gewichtungsfunktion $f$ ist allerdings von der Anzahl der Anfragen zwischen zwei Services abhängig. Diese Anzahl wird von der dezentralen Komponente gesammelt. 
+Das bedeutet also, jede Kante besitzt nun eine Gewichtung. Diese Gewichtung ist abhängig von der tatsächlich registrierten Nutzung der Verbindung zwischen zwei Services. Dieses mathematische Konzept kann nun mithilfe von Neo4j umgesetzt werden. Die Werte der Gewichtungsfunktion $f$ werden als Wert an der \textit{Relation} zwischen den entsprechenden \textit{Nodes} gespeichert. Die Gewichtungsfunktion $f$ ist allerdings von der Anzahl der Anfragen zwischen zwei Services abhängig. Diese Anzahl wird von der dezentralen Komponente gesammelt. 
 
-Beispielsweise könnte mithilfe dieser Komponente ein Endpunkt an jedem Service registriert werden, der auf Anfrage eine Antwort in JSON-Format bereitstellt, die folgendermaßen aufgebaut sein könnte:
+Beispielsweise könnte mithilfe dieser Komponente ein Endpunkt an jedem Service registriert werden, der auf Anfrage eine Antwort im JSON-Format bereitstellt. Diese könnte folgendermaßen aufgebaut sein:
 
 \begin{lstlisting}[language=json, caption={Antwort über Nutzung anderer Services}]
 {
