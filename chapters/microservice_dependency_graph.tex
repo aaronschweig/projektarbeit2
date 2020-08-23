@@ -191,17 +191,22 @@ Ist nun eine Graph anhand der Nutzungsinformationen aufgebaut, so kann mithilfe 
 
 \section{Bewertung und Gegenüberstellung der Methoden}
 
-\begin{table}[h]
-	\centering
-	\begin{tabularx}{\textwidth}{s|X|X|X}
-		\textbf{Kriterium} & \textbf{Elastic} & \textbf{statisches Konzept} & \textbf{dynamisches Konzept}\\
-		\hline
-		\textbf{Geschwin-digkeit} & Mithilfe von Alarmen kann die Kombination aus Kibana und APM sehr schnell den Nutzer über eine Anomalie bei einem Service informieren & Innerhlab dieses Konzepts wurde noch kein automatischer Ansatz zum erkennen eins Fehlers definert. & Äquivalent zum dynamischen Konzept \\
-		\hline
-		\textbf{Aufbereitung der Daten} & Die \ac{ML} Pipelines transfomieren gesammelte Hardwaredaten, ohne das ein manuelles Eingreifen nötig ist. Diese Daten werden direkt bewertet. & Rohdaten über den Aufbau und Zusammenhang aller Services werden zu einem Graphen transformiert, der einen erweiterten Einblick in das Zusammenspiel liefert. & Automatisiertes Zusammentragen und Auswerten von Rohdaten ermöglichen einen fehlerunanfälligeren Prozess, wie bei der statischen Methode \\
-		\hline
-		\textbf{Einhaltung von Standards} & Möglich mithilfe der \enquote{OpenTracing bridge}\footnote{\url{https://www.elastic.co/guide/en/apm/get-started/current/opentracing.html}} & Keine Schnittstelle im aktuellen Konzept, die das Einhalten von Standards erfordert. & Äquivalent zur statischen Methode. \\
-	\end{tabularx}
-	\vspace{1cm}
+Im folgenden Abschnitt werden die bisher vorgestellten Methoden noch einmal einander gegenübergestellt. Damit kann herausgefunden werden, ob die in Kapitel \vref{chap:Anforderungen} beschriebenen Anforderungen erfüllt wurden und wie diese umgesetzt wurden. Dabei werden sowohl Vor- als auch Nachteile genannt. 
+
+\clearpage
+
+\begin{tabularx}{\textwidth}{s|X|X|X}
+	\textbf{Kriterium} & \textbf{Elastic} & \textbf{statisches Konzept} & \textbf{dynamisches Konzept}\\
+	\hline
+	\textbf{Geschwin-digkeit} & Mithilfe von Alarmen kann die Kombination aus Kibana und APM sehr schnell den Nutzer über eine Anomalie bei einem Service informieren & Innerhlab dieses Konzepts wurde noch kein automatischer Ansatz zum erkennen eins Fehlers definert. & Äquivalent zum dynamischen Konzept \\
+	\hline
+	\textbf{Aufbereitung der Daten} & Die \ac{ML} Pipelines transfomieren gesammelte Hardwaredaten, ohne das ein manuelles Eingreifen nötig ist. Diese Daten werden direkt bewertet. & Rohdaten über den Aufbau und Zusammenhang aller Services werden zu einem Graphen transformiert, der einen erweiterten Einblick in das Zusammenspiel liefert. & Automatisiertes Zusammentragen und Auswerten von Rohdaten ermöglichen einen fehlerunanfälligeren Prozess, wie bei der statischen Methode \\
+	\hline
+	\textbf{Einhaltung von Standards} & Möglich mithilfe der \enquote{OpenTracing bridge}\footnote{\url{https://www.elastic.co/guide/en/apm/get-started/current/opentracing.html}} & Keine Schnittstelle im aktuellen Konzept, die das Einhalten von Standards erfordert. & Äquivalent zur statischen Methode. \\
+	\hline
+	\textbf{Integration u. Wartung} & Mithilfe von Docker-Containern ist es einfach die verschiedenen Komponenten zu Nutzen. Allerdings wird für die Konfiguration ein tieferes Verständnis der Systeme benötigt. & Hoher manueller Aufwand, um Services zu konfigureren und zu aktualisieren. Zudem besteht eine große Fehleranfälligkeit durch eine hohe Anzahl an manuellen Prozessen & Hoher Automiatisierungsgrad. Es muss nur eine Client-Bibliothek eingebunden werden und diese muss den Endpunkt der zentralen Komponente kennen. Die restlichen Punkte laufen automatisiert ab. \\
+	\hline
+	\textbf{Dezentralisie-rung} & Durch Containertechnologie unterstützt. Ein Problem besteht nur bei dem Aufsetzen der \ac{ML} Pipelines & Sehr gut unterstützt & Sehr gut unterstützt \\
+	\bottomrule
 	\caption{Gegenüberstellung der verschiedenen Konzepte}
-\end{table}
+\end{tabularx}
