@@ -44,7 +44,7 @@
 \listoftables
 
 %	Listingverzeichnis
-\lstlistoflistings
+% \lstlistoflistings
 
 % 	Abkürzungsverzeichnis (siehe Datei acronyms.tex!)
 \input{acronyms}
@@ -60,20 +60,16 @@
 
 
 \chapter{Einleitung}
-Outline:
-\begin{itemize}
-	\item Einleitung schreiben, wieso das Thema wichtig ist und wieso die Schnittstelle so relevant ist
-	\begin{itemize}
-		\item kurzes Aufzeigen des Problems und Hintergrundes der Arbeit
-	\end{itemize}
-	\item Kurz die Historie von Microservices erklären
-	\begin{itemize}
-		\item von Monolithen über SOA bis hin zu Microservices
-		\item Anhand eines versimplifizierten beispiels aufzeigen wie Zielarchitekturen aussehen
-	\end{itemize}
-	\item Def. Microservice, Governance und Observability raushauen
-	\item Wie sehen potenzielle Lösungen unter Berücksichtigung der auf Basis des Problems hergeleiteten Kriterien aus?
-\end{itemize}
+
+In den letzten Jahren werden immer mehr monolithische Applikation zu Microservices transformiert. So werden aus wenigen großen Anwendungen hunderte kleine Services. Die Verwaltung dieser Services wird immer mehr zu einer Herausforderung, welche Unternehmen meistern müssen. Dabei kommt es nicht nur darauf an einen Überblick zu behalten, welche Services vorhanden sind, es muss auch bei einem Ausfall eines Services bekannt sein, wie dieser schnellstmöglich behoben werden kann, um Schaden zu vermeiden. 
+
+In folgender Arbeit wird ein Konzept für eine graphbasierte Service-Registry entworfen. Mithilfe dieser Registry können Fehler nicht nur schnell lokalisiert werden, sondern es können auch deren Auswirkungen festgestellt werden.
+
+Dafür wird zunächst erklärt, welche Eigenschaften einen Microservice charakterisieren. Danach wird erläutert, wie genau Microservices observiert werden können. Um hunderte Services verwalten zu können, müssen bestimmte Konzepte evaluiert werden. Deshalb wird kurz vorgestellt wie Governance für Microservices funktioniert. Im Anschluss wird dann eine Lücke zwischen diesen beiden elementaren Säulen aufgezeigt, die mithilfe des vorgestellten Konzepts befüllt werden soll. Um später beurteilen zu können, ob das vorgestellte Konzept tatsächlich passend ist, werden fünf Kriterien hergeleitet.
+
+Im folgenden Kapitel wird zu Beginn versucht ein mathematisches Modell zur Beschreibung der Idee zu erstellen. Dazu werden grundlegende Begriffe aus der Graphentheorie definiert. Mithilfe dieses Modells werden dann konkrete Vorschläge erarbeitet, die eine theoretische Grundlage für ein zu implementierendes Konzept bilden. Die graphbasierte Registry besteht aus zwei großen Komponeten, einer zentralen und einer dezentralen. Die Idee und das Zusammenspiel zwischen beiden Komponeten wird aufgezeigt. Zudem wird noch eine bereits bestehende Alternative vorgestellt.
+
+Am Ende wird dann ein Vergleich aller Methoden vorgenommen, um eine Empfehlung für eine Implementierung abgeben zu können.
 
 % CHAPTER: Microservice - Observability - Governance
 \input{chapters/microservice_observability_gouvernance.tex}
@@ -83,11 +79,11 @@ Outline:
 
 \chapter{Fazit und Ausblick}
 
-Im Rahmen dieser Arbeit wurden zunächst grundlegende Begriffe geklärt die im Rahmen von Microservices wichtig sind. Dabei wurde unter anderem eine Definition von Microservices anhand ihrer Eigenschaften vorgenommen. Zusätzlich wurden wichtige Elemente der Observability und der Governance beschrieben. Für die daraus resultierende Problemstellung wurde ein Konzept vorgestellt, welches es ermöglicht einen dynamischen Überblick über die Services in einem Unternehmen zu erhalten. Dabei lag der Fokus vor allem auf der Herleitung des Konzepts. In zukünfigen Arbeiten könnte dieses Konzept an einigen Stelle erweitert werden. Es währe beispielsweise wichtig, zu untersuchen, ob es eine bessere Definition der Kapazitätsfunktion gibt, die dem Flussnetzwerk zugrundeliegt. Dies könnte dann mithilfe gesammelter Hardewaredaten geschehen. Die Kapazitätsfunktion würde dann einen Zusammenhang zwischen der Nutzung und der Auslastung des Services beschreiben. Dies würde dem Graphen einen Mehrwert verleihen, da weitere Informationen vorhanden sind. Eine weitere Verbesserung des Konzepts könnte im Bereich der Darstellung von Services erreicht werden. Ein wichtiger Aspekt eines Microservices ist auch eine individuelle Skalierbarkeit. Werden Services nun skaliert muss die Service-Registry erkennen, dass der neue Service in Replikat ist und dies entsprechend in dem Graphen hinterlegen. Im aktuellen Konzept ist dieser Punkt noch nicht gelöst. Zusätzlich zur Skalierbarkeit müssen auch verschiedenen Umgebungen in einer Service-Registry abgebildet werden können. Auch eine solche Erweiterung des Konzepts könnte untersucht werden.
+Im Rahmen dieser Arbeit wurden zunächst grundlegende Begriffe geklärt, die für ein grundlegendes Verständnis von Microservices wichtig sind. Dabei wurde unter anderem eine Definition von Microservices anhand ihrer Eigenschaften vorgenommen. Zusätzlich wurden wichtige Elemente der Observability und der Governance beschrieben. Für die daraus resultierende Problemstellung wurde ein Konzept vorgestellt, welches es ermöglicht einen dynamischen Überblick über die Services in einem Unternehmen zu erhalten. Dabei lag der Fokus vor allem auf der Herleitung des Konzepts. In zukünfigen Arbeiten könnte dieses Konzept an einigen Stellen erweitert werden. Es wäre beispielsweise wichtig zu untersuchen, ob es eine bessere Definition der Kapazitätsfunktion gibt, die dem Fluss zugrundeliegt. Dies könnte dann mithilfe gesammelter Hardwaredaten geschehen. Die Kapazitätsfunktion würde dann einen Zusammenhang zwischen der Nutzung und der Auslastung des Services beschreiben. Dies würde dem Graphen einen Mehrwert verleihen, da weitere Informationen vorhanden sind. Eine weitere Verbesserung des Konzepts könnte im Bereich der Darstellung von Services erreicht werden. Ein wichtiger Aspekt eines Microservices ist auch eine individuelle Skalierbarkeit. Werden Services nun skaliert, muss die Service-Registry erkennen, dass der neue Service ein Replikat ist und dies entsprechend in dem Graphen hinterlegen. Im aktuellen Konzept ist dieser Punkt noch nicht gelöst. Zusätzlich zur Skalierbarkeit müssen auch verschiedene Umgebungen in einer Service-Registry abgebildet werden können. Auch eine solche Erweiterung des Konzepts könnte untersucht werden.
 
-Eine weitere interessante Ergänzung geht vor allem auf die Verwendung der Daten für Vorhersagen, wie in \vref{chap:Anforderungen} beschrieben, ein. Es könnte z.B. eine Speicherung der verschiedenen Graphen in einer Timeseries-Datenbank durchgeführt werden, um anhand ehemaliger Graphen vorhersagen über zukünftige Zustände eines Graphen treffen zu können.
+Eine weitere interessante Ergänzung geht vor allem auf die Verwendung der Daten für Vorhersagen, wie in \vref{chap:Anforderungen} beschrieben, ein. Es könnte z.B. eine Speicherung der verschiedenen Graphen in einer Timeseries-Datenbank durchgeführt werden, um anhand ehemaliger Graphen Vorhersagen über zukünftige Zustände eines Graphen treffen zu können.
 
-Zusammenfassend ist zu erkennen, dass in einer graphbasierten Registry ein großes Potenzial besteht, welches in viele verschiedene Richtungen weiterentwickelt werden kann. Wie in der Tabelle \vref{tab:Vergleich} zu sehen ist, ist es schwer die verscheidenen Ansätze miteinander zu vergleichen. Insbesondere der Vergleich zwischen dem Ansatz mithilfe von Elastic-Produkten und der graphbasierten Registry hinkt, da es sich um grundsätzlich Unterschiedliche Tools handelt, die sich gegenseitig sehr gut ergänzen können. Daher kann gesagt werden, dass in einer Kombination der beiden Ansätze ein Mehrwert für den Endnutzer liegt.
+Zusammenfassend ist zu erkennen, dass in einer graphbasierten Registry ein großes Potenzial besteht, welches in viele verschiedene Richtungen weiterentwickelt werden kann. Wie in der Tabelle \vref{tab:Vergleich} zu sehen ist, ist es schwer die verschiedenen Ansätze miteinander zu vergleichen. Insbesondere der Vergleich zwischen dem Ansatz mithilfe von Elastic-Produkten und der graphbasierten Registry hinkt, da es sich um grundsätzlich unterschiedliche Tools handelt, die sich gegenseitig sehr gut ergänzen können. Daher kann gesagt werden, dass in einer Kombination der beiden Ansätze ein Mehrwert für den Endnutzer liegt.
 %	Literaturverzeichnis
 \clearpage
 \ihead{}
