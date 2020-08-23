@@ -180,26 +180,28 @@ Beispielsweise könnte mithilfe dieser Komponente ein Endpunkt an jedem Service 
 }
 \end{lstlisting}
 
+Diese \texttt{PULL}-Methode hat den Nachteil, dass innerhalb der zentralen Komponente ein Steuerungsmechanismus eingbaut werden muss, welcher alle Services, die sich angemeldet haben, in regelmäßigen Abständen anfrägt, um die aktuellen Informationen zu erhalten.
+
+Im Gegensatz dazu, könnte auch eine \texttt{PUSH}-Methode verwendet werden. Das bedeutet, die Informationen werden regelmäßig an die zentrale Komponente übermittelt, ohne das diese die Informationen anfordern muss. Beide Methoden haben Vor- und Nachteile, welche im Rahmen dieser Arbeit allerdings nicht näher beleuchetet werden.
+
+\subsection{Zusammenfassung des Konzepts}
+
+Zusammenfassend lässt sich das Konzept folgendermaßen beschreiben: Es müssen zwei Komponenten entickelt werden. Eine dezentrale, in der jeweiligen Programmiersprache des Services entwickelte Client-Bibliothek und eine zentrale Service-Registry. Die Client-Bibliotheken sind dabei dafür zuständig, den Service während des Startvorgangs bei der Registry anzumelden und einen initialen Informationsaustausch durchzuführen. Zu den Aufgabe der Service-Registry gehört es dann den Graphen auf Basis der Anmelde- und Nutzungsdaten der einzelnen Services zu konstruieren. Mithilfe dieses Graphen können dann sehr schnell Risikoeinschätzungen durchgeführt werden, was passiert, wenn ein bestimmter Service ausfällt. \\
+Ist nun eine Graph anhand der Nutzungsinformationen aufgebaut, so kann mithilfe einer \texttt{CYPHER}-Query einfach ermittelt werden, welche Services bei einem Ausfall betroffen sind oder auch, ob ein \enquote{Single-Point of Failure} vorhanden ist.
+
 \section{Bewertung und Gegenüberstellung der Methoden}
 
-\begin{itemize}
-	\item Kurze Einführung in Graphdatenbanken, im speziellen Neo4j. Wieso passen die so gut? referenzieren auf Bilder und \enquote{Abhängigkeiten} Wie kann damit eine Lösung konstruiert werden?
-	\begin{itemize}
-		\item Statischer Ansatz $\Rightarrow$ von den Entwicklern definierte Abhängigkeiten werden in der Service-Definition angegeben. Der Graph kann aus diesen SD's erstellt werden. Hier gibt es Probleme: Manuelle Veranwtortlichkeit widerspricht eigentlicher Idee von Risikoeinschätzung, da ein neuer Fehler Mensch eingebaut wird.
-		\item Automatischer nutzungsbasierter, somit dynamischer Aufbau des Graphen. Prinzip ähnlich wie bei Prometheus (populäres Tool zum sammeln von Metriken). Konzept ähnlich wie Distributed Tracing. Dort werden alle Traces mit ihren Spans zusammengefasst und zentral ausgewertet. Kombination aus dieser Idee mit Prometheus-Ansatz sieht dann folgendermaßen aus:
-		
-		Jeder Service exposed einen \texttt{/traffic}-Endpoint, der unstrukturierte Daten bzgl. der Netzwerkaktivität enthält. Diese können dann in einem Service, der für den Aufbau des Graphen zuständig ist, zu eben diesem umgewandelt werden.
-		\item Es kann zusätzlich überlegt werden, ob anstatt dieses \texttt{PULL}-Verfahrens eine Push-Variante gewählt wird, welche ähnlich wie \texttt{fluentd} als Sidecar in einer containererisierten Umgebung läuft. Die könnte dann periodisch die Netzwerkdaten pushen, wenn sie Zugriff darauf hat.
-	\end{itemize}
-	\item Es kann überlegt werden welche Metadaten zusätzlich im Rahmen dieses Graphen eine sinnvolle Ergänzung bieten würden, sodass ein weiterer Mehrwert geschaffen werden kann. (Ist das noch im Rahmen der Arbeit? Kommt das eher in den Ausblick mit ein paar Ideen?)
-	\item Wie können jetzt die Sachen in dem coolen Graphen genutzt werden?
-	\begin{itemize}
-		\item Kurze \texttt{CYPHER-QUERIES} Aufschreiben:
-		\begin{itemize}
-			\item Wie finde ich affectete services raus
-			\item was passiert wenn ein Service X ausfällt
-			\item Was ist die Zentralste Komponente in meinem Unternehmen
-			\item usw.
-		\end{itemize}
-	\end{itemize}
-\end{itemize}
+\begin{table}[h]
+	\centering
+	\begin{tabularx}{\textwidth}{s|X|X|X}
+		\textbf{Kriterium} & \textbf{Elastic} & \textbf{statisches Konzept} & \textbf{dynamisches Konzept}\\
+		\hline
+		\textbf{Geschwin-digkeit} & Mithilfe von Alarmen kann die Kombination aus Kibana und APM sehr schnell den Nutzer über eine Anomalie bei einem Service informieren & Innerhlab dieses Konzepts wurde noch kein automatischer Ansatz zum erkennen eins Fehlers definert. & Äquivalent zum dynamischen Konzept \\
+		\hline
+		\textbf{Aufbereitung der Daten} & Die \ac{ML} Pipelines transfomieren gesammelte Hardwaredaten, ohne das ein manuelles Eingreifen nötig ist. Diese Daten werden direkt bewertet. & Rohdaten über den Aufbau und Zusammenhang aller Services werden zu einem Graphen transformiert, der einen erweiterten Einblick in das Zusammenspiel liefert. & Automatisiertes Zusammentragen und Auswerten von Rohdaten ermöglichen einen fehlerunanfälligeren Prozess, wie bei der statischen Methode \\
+		\hline
+		\textbf{Einhaltung von Standards} & Möglich mithilfe der \enquote{OpenTracing bridge}\footnote{\url{https://www.elastic.co/guide/en/apm/get-started/current/opentracing.html}} & Keine Schnittstelle im aktuellen Konzept, die das Einhalten von Standards erfordert. & Äquivalent zur statischen Methode. \\
+	\end{tabularx}
+	\vspace{1cm}
+	\caption{Gegenüberstellung der verschiedenen Konzepte}
+\end{table}

@@ -24,6 +24,10 @@
 
 \input{titlepage}
 
+
+% Ehrenwörtliche Erklärung ewerkl.tex einziehen
+\input{ewerkl.tex}
+
 \pagenumbering{roman} % Römische Seitennummerierung
 \normalfont
 
@@ -78,6 +82,14 @@ Outline:
 \input{chapters/microservice_dependency_graph.tex}
 
 \chapter{Bewertung und Einschätzung der Arbeit, sowie Ausbilck auf künfitge Arbeiten}
+
+\begin{itemize}
+	\item Verwalten von Application Pools (gleicher Service Typ, wenn er ein Replika ist)
+	\item Herleitung einer sauberen Kapazitätsfunktion
+	\item Verwalten von Environments
+	\item Konkretere Methoden für Anmeldung/Registrierung eines Services + Einführung von Schnittstellen mit anderen Systemen
+	\item timeseries database für tracking und zukünfige Bewertung
+\end{itemize}
 %	Literaturverzeichnis
 \clearpage
 \ihead{}
@@ -87,9 +99,6 @@ Outline:
 % Der Anhang beginnt hier - jedes Kapitel wird alphabetisch aufgezählt. (Anhang A, B usw.)
 % \appendix
 % \ihead{\appendixname~\thechapter} % Neue Header-Definition
-
-% Ehrenwörtliche Erklärung ewerkl.tex einziehen
-\input{ewerkl.tex}
 
 
 \end{document}
