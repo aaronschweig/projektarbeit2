@@ -62,9 +62,34 @@ Diese nächste \enquote{Entwicklungsstufe} auf dem Weg zur Microservicearchitekt
 \end{definition}
 
 \subsection{Der letzte Schritt - die Microservicearchitektur}
-\autocite{Silveira2016}
-% TODO: Microservices noch endgültig definieren
 
+Nachdem nun die Services innerhalb der \ac{SOA} aufgestellt wurden ist zu erkennen, dass dabei sehr viele Probleme einer monolithischen Architektur gelöst wurden. \autocite{Silveira2016} Der ESB hat eine hohe komplexität, da dort sher viel logik implementiert ist. der Muss so sachen wie authorization logging und service-composition drauf haben. Deshalb war auch diese lösung nid optimal. Man hat dann angefangen neu zu definieren wie ein Service aufgebaut sein könnte und man aht versuht nach dem rpinzip \enquote{smart endpoints - dumb pipes} zu arbeiten, um eine zentrale komplizierte Komponente wie den ESB nichtmehr zu haben. Diese logik verschwindet allerdings nid und muss dann halt in den Services iwo eingebaut werden. Services werden generell anhand von den Eigenschaften definiert:
+
+\begin{definition}[Eigenschaften einer Microservicearchitektur]
+	\hfill
+	\begin{enumerate}
+		\item \heading{Business Capability Oriented:}\\
+		Das Design eines Microservice ist stark gekoppelt an eine spezifische Businessfunktion.\autocite[S. 8]{microservice_enterprise} Microservices haben keine feste Größe. Dies ist auch ein Punkt, an dem sich Services in einer Microservicearchitektur von Services aus der \ac{SOA} unterscheiden. Diese Services waren relativ grob gefasst und wurden bei Bedarf zu größeren logischen Komponenten zusammengeschlossen. In \citetitle{microservice_enterprise} beschreibt der Autor die Größe folgendermaßen:
+		\begin{quote}
+			\enquote{[T]he service should be sized purely based on the scope and the business functionality.} - \citeauthor{microservice_enterprise}
+		\end{quote}
+		\item \heading{Smart endpoints and dumb pipes: \autocites{microservice_enterprise}{FowlerMicrservices}}\\
+		Wie bereits erwähnt wird die Komplexität, die im ESB lag aufgebrochen, um keine zentrale Stelle mehr zu haben, die sher viel funktionalität mehr vereint. Dabei wird versucht, die Logk die vorher im ESB war so aufzubrechen, dass sie in kleinerere Form in den einzelnen Services implementiert werden kann. Die Verbindungen zwischen den eigentlichen Services beschränken sich dann rein auf das Übertragen von Daten, ohne diese zu verändert. Dafür werden oftmals verschiedene Protokolle verwendet. Zu beliebten Protokollen gehören so Sachen wir HTTP, MessageBroker oder \ac{RPC}.
+		\item \heading{Autonomous: Develop, Deploy, and Scale Independently: \autocite{microservice_enterprise}}\\
+		Die Idee autonomer Services ist mit einer der Hauptgründe, warum Microservice in einem Unternehmen implementiert werden. Dabei ist es bei Microservices wichtig zu verstehen, dass sie nicht wie traditionelle WebServices oder Monolithen dieselbe Laufzeit teilen, sondern als abgetrennt davon bereitgestellt werden. Dies wird dabei oft mithilfe von Containertechnologien und damit verbundenen Containerorchetrierungstools erreicht. Die Autonomie eines Services it mit ein Kernbestandteil für den Geamterfolg einer Microservicearchitektur.
+		\item \heading{Observability:}\\
+		Werden Microservices eingführt muss sichergestellt werden, dass Einsichten in alle Services bestehen. Um Services zu observieren wird oftmals mit einer zentralen Komponente gearbeitet. Was genau unter Observability zu verstehen ist, wird im folgenden Kapitel beschrieben.
+		\item \heading{Decentralized Governance}:\\
+		Die Autonomie der Microservices führt dazu, dass ein Problem bei der Verwaltung entstehen kann. Sehr viele komplett autonom arbeitende Services können zu einem Problem in einem Unternehmen werden, da irgendwann nichtmehr geklärt werden kann, wer für einen bestimten Servive verantwortlich ist. Dieser Punkt wird in einem späteren Kapitel ausführlicher Behandelt
+		\item \heading{Decentralized Data Management:}\\
+		Wie bereits beschrieben ist es das Ziel von nem Microservicearchitektur so autonom wie möglich zu sein. Wenn es nur eine zentrale Datenbank gibt ist das allerdings nicht sonderlich autonom. Deshabl wird dann, im Gegensatz zu nem Monolithen, eine eigene Datenverwaltung eingeführt. Das hat den Vorteil, dass wenn ein microservice das Datenbankschema oder so ändert nimmer alles zuammenbricht, sondern das alles individuell regeln kann, weil ein klares Interface vorhande ist, dass sicherstellt, dass alles passt. Dabei gilt es aber zu beachten, dass so sachen wie FK's (in \ac{RDBMS} gerne genutzt) nichtmehr auf Datenbankebene, sonder mithilfe von Applikationcode realisiert werden müssen. Auch wenn Transaktionen benötigt werden müssen diese mithilfe der \enquote{smart Endpoints} sichergestellt werden.
+		\item \heading{Infrastructure Automation:\autocite{FowlerMicrservices}}\\
+		Gerade durch die Hohe Anzahl an Microservices ist es umso wichtiger, dass diese nicht manuell bereitgestellt und getestet werden müssen. Zusätzlich sollte es mithilfe der eben schon erwähnte Tools wie Kubernetes möglich sein, die für Services benötigte Infrastructure problemlos mithilge eines automatisierten Prozesses bereitzustellen. Dieser Prozess ist als \ac{CI}/\ac{CD} bekannt. Bei der \ac{CI} geht es vor allem darum, dass die Applikation vor dem bereitstellen getestet werden kann. Die \ac{CD} konzentriert sich dabei darauf, dass der Code auf den entsprechenden Umgebungen ausgerollt werden kann.
+		\item \heading{Design for failure:}\\
+		\item \heading{Failure Tolerance:}\\
+		\item \heading{Evolutionary Design:}\\
+	\end{enumerate}
+\end{definition}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%
