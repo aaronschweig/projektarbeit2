@@ -28,10 +28,10 @@ Eine Unterkategorie bei den gerichteten Graphen sind sowohl zyklische, als auch 
 	Der Graph beinhaltet also Informationen über einen Service, als auch über seine Verbindungen mit anderen Services. Da es ein gerichteter Graph ist, gilt für $$(a,b), (b,a) \in A(G),\text{ dass }(a,b) \neq (b,a),$$ da es sich bei den Elementen von $A(G)$ um geordnete Tupel handelt. Diese Tatsache spiegelt sich auch in der Realität wieder, da die Abhängigkeit eines Services $a$ von einem Service $b$ nicht dieselbe Anfrage widerspiegelt, die Service $b$ von Service $a$ hat.
 \end{example}\label{exp:microserviceGraph}
 
-Man erkennt also bereits jetzt, dass rein mit dem mathematischen Modell eines Graphen bereits viele reale Aspekte übereinstimmen, was es als potenzielles Datenmodell qualifiziert. Die Datenstruktur eines Graphen hat zusätzlich noch die Möglichkeit, Informationen sowohl an den Knoten, als auch an den Kanten zu speichern \footnote{TODO: Quelle}. Zusätzlich könnte eine weitere Idee aus der \textbf{Graphentheorie} eine nützliche Ergänzung zu der bisherigen Idee darstellen.
+Man erkennt also bereits jetzt, dass rein mit dem mathematischen Modell eines Graphen bereits viele reale Aspekte übereinstimmen, was es als potenzielles Datenmodell qualifiziert. Die Datenstruktur eines Graphen hat zusätzlich noch die Möglichkeit, Informationen sowohl an den Knoten, als auch an den Kanten zu speichern. Zusätzlich könnte eine weitere Idee aus der \textbf{Graphentheorie} eine nützliche Ergänzung zu der bisherigen Idee darstellen.
 
 \begin{definition}[Fluss]\label{def:Fluss}
-	In der Graphentheorie stellt ein Fluss eine Funktion $f: A \rightarrow \mathbb{R_+}$ dar, die jeder Kante $a \in A(G)$ einen nichtnegativen Flusswert $f(a) \in \mathbb{R_+}$ zuweist. Des Weiteren muss folgende Bedingung erfüllt sein, damit es sich bei dieser Funktion um einen Fluss handelt. Dafür muss gelten, dass der Flusswert einer Kante $a \in A(G)$ höchstens so groß ist wie die Kapazität der Kante mit: \footnote{TODO: Quelle, Netzwerk noch erklären} $$\forall a \in A(G): f(a) \leq u(a)$$
+	In der Graphentheorie stellt ein Fluss eine Funktion $f: A \rightarrow \mathbb{R_+}$ dar, die jeder Kante $a \in A(G)$ einen nichtnegativen Flusswert $f(a) \in \mathbb{R_+}$ zuweist. Des Weiteren muss folgende Bedingung erfüllt sein, damit es sich bei dieser Funktion um einen Fluss handelt. Dafür muss gelten, dass der Flusswert einer Kante $a \in A(G)$ höchstens so groß ist wie die Kapazität der Kante mit: \autocite[S. 3ff]{ford2015flows} $$\forall a \in A(G): f(a) \leq u(a)$$
 \end{definition}
 
 Mithilfe der Idee einer Flussfunktion in einem Graphen können die Kanten und die Beziehungen zwischen den einzelnen Services genauer dargestellt werden. Die Gewichtung der Kanten kann eine Repräsentation der Intensität der Nutzung dieser Kante darstellen.
@@ -108,8 +108,6 @@ Wie bereits in der Definition eines Microservice festgehalten, ist es die Pflich
 
 Dabei wird für jede eingelesene Service-Definition ein neuer Knoten im Graphen angelegt. Es kann dann, auf Basis von eigenen Identifiern oder von den angegebenen URL's bei den Abhängigkeiten, eine Kante zwischen dem neu erstellten Service und der Abhängigkeit erstellt werden.
 
-% TODO: Evtl. noch den Algorithmus zum auslesen und konstruieren eines Graphen reinhauen oder ein Bild von nem neo4j graphen der sowas repräsentiert
-
 Diese Methode bringt allerdings einige Probleme mit sich, welche die Nutzung einer solchen Service-Registry erschweren würden:
 
 \begin{enumerate}
@@ -129,14 +127,7 @@ Aus den Problemen der statischen Methode lässt sich erkennen, dass viele Prozes
 	\item die Einführung einer Gewichtung, um zu erkennen wie \enquote{stark} eine Abhängigkeit zwischen zwei Services ist.
 \end{enumerate}
 
-Die Lösung für die in Punkt eins und zwei beschriebenen Probleme lässt sich mithilfe einer Prozessautomatisierung erreichen. Dazu wird der vorherige Ansatz des manuellen Eintragens der Serviceinformationen in die Servie-Definition ersetzt, durch die Idee einer automatischen Service-Anmeldung. Mithilfe eines Plugins, für die in dem Microservice verwendete Servertechnologie, kann während des Startvorgangs eine Anmeldung an der zentralen Komponente der Service-Registry durchgeführt werden. Diese Anmeldung kann mithilfe des folgenden Ablaufs beschrieben werden:
-
-\begin{figure}[h]
-	\centering
-	
-	\caption{TODO: Protocoll aufmalen}
-\end{figure}
-
+Die Lösung für die in Punkt eins und zwei beschriebenen Probleme lässt sich mithilfe einer Prozessautomatisierung erreichen. Dazu wird der vorherige Ansatz des manuellen Eintragens der Serviceinformationen in die Servie-Definition ersetzt, durch die Idee einer automatischen Service-Anmeldung. Mithilfe eines Plugins, für die in dem Microservice verwendete Servertechnologie, kann während des Startvorgangs eine Anmeldung an der zentralen Komponente der Service-Registry durchgeführt werden. 
 \begin{enumerate}
 	\item Während des Hochfahrens des Services meldet sich der \enquote{Client} bei der zentralen Komponente als Service an. Die zentrale Komponente kann dann dem Service einen Service-Identifier zuweisen, der zur späteren Identifizierung sowohl in der Registry selbst, als auch bei anderen Tools dienen kann.
 	\item Im nächsten Schritt wird dann von dem Service ein Endpunkt (entweder vordefiniert durch die Registry oder ausgehandelt während des initialen Verbindungsaufbaus) bereitgestellt, der Informationen über die Aktivität seit der letzten Abfrage dieses Endpunktes enthält. Dabei kommt es vor allem darauf an, welche anderen Services angefragt werden. Jeder Service sollte einen eigenen Header mitsenden, der den von der Registry bereitgestellten Identifier beinhaltet. So kann später in der zentralen Komponente der Registry festgestellt werden, welche Services zur Bearbeitung der eigenen Anfrage, Informationen aus anderen Services benötigen.
